@@ -1,11 +1,15 @@
+import config from '@config/config';
 import logging from '@logger/bootstrap';
+import httpLogging from '@logger/httpLogging';
 import IRestError from '@module/http/IRestError';
 import RestError from '@module/http/RestError';
+import encrypt from '@tool/cipher/encrypt';
 import getLocales from '@tool/i18n/getLocales';
 import { ErrorObject } from 'ajv';
+import ErrorStackParser from 'error-stack-parser';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
-import { isError } from 'my-easy-fp';
+import { first, isError } from 'my-easy-fp';
 
 const log = logging(__filename);
 
@@ -41,19 +45,30 @@ export default function onHookGlobalError(
       '>>>>> ---------------------------------------------------------------------------------',
     );
 
+    setImmediate(() => httpLogging(req, reply, err));
     reply.status(httpStatusCodes.BAD_REQUEST).send(body);
 
     return;
   }
 
   if (isError(err) && err instanceof RestError) {
+    const frames = ErrorStackParser.parse(err);
+    const frame = first(frames);
+
+    const position = `project://${frame.fileName}/${frame.functionName}:${frame.lineNumber}:${frame.columnNumber}`;
+    const code =
+      config.server.runMode !== 'production' && config.server.runMode !== 'stage'
+        ? position
+        : encrypt(position);
+
     const body: IRestError = {
-      code: err.code,
+      code,
       message: err.message,
       payload: err.payload,
       status: err.status ?? httpStatusCodes.INTERNAL_SERVER_ERROR,
     };
 
+    setImmediate(() => httpLogging(req, reply, err));
     reply.status(err.status ?? httpStatusCodes.INTERNAL_SERVER_ERROR).send(body);
   }
 
@@ -73,5 +88,6 @@ export default function onHookGlobalError(
     '>>>>> ---------------------------------------------------------------------------------',
   );
 
+  setImmediate(() => httpLogging(req, reply, err));
   reply.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(body);
 }

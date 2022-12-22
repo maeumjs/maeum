@@ -17,7 +17,7 @@ module.exports = {
   silent: false,
   testMatch: ['**/__tests__/*.(ts|tsx)', '**/__test__/*.(ts|tsx)'],
   testPathIgnorePatterns: ['/node_modules/', 'example/', 'dist/'],
-  setupFilesAfterEnv: ['./.config/jest.setup.js'],
+  setupFilesAfterEnv: ['./.configs/jest.setup.js'],
   moduleNameMapper: pathsToModuleNameMapper(tsconfig.compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),

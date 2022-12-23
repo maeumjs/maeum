@@ -8,6 +8,12 @@ declare module 'fastify' {
   import http from 'http';
   import { JSONSchema7 } from 'json-schema';
 
+  export interface FastifyRequest {
+    isLogged: boolean;
+    setRequestLogging: () => void;
+    getIsRequestLogging: () => boolean;
+  }
+
   export type FastifyServerSchemaControllerOptions<
     RawServer extends RawServerBase = RawServerDefault,
     Logger extends FastifyBaseLogger = FastifyLoggerInstance,

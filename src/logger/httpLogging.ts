@@ -3,6 +3,8 @@ import logging from '@logger/bootstrap';
 import { ILogFormat } from '@logger/interface/ILogFormat';
 import getHttpMethod from '@logger/module/getHttpMethod';
 import httplog from '@logger/module/httplog';
+import payloadlog from '@logger/module/payloadlog';
+import RestError from '@module/http/RestError';
 import escape from '@tool/misc/escape';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
@@ -14,7 +16,7 @@ const log = logging(__filename);
 
 const cacheNotHit = Symbol('exclude-cache-not-hit');
 const caches: Record<string | typeof cacheNotHit, boolean> = { [cacheNotHit]: false };
-const excludes = ['/health', '/', '/swagger.io', '/swagger/io/:suburl*'].map((url) =>
+const excludes = ['/health', '/', '/swagger.io', '/swagger.io/:suburl*'].map((url) =>
   pathToRegexp(url),
 );
 
@@ -47,13 +49,44 @@ function create(req: FastifyRequest): string | undefined {
   }
 }
 
+function getMessage(err?: Error, lang?: string): string | undefined {
+  if (err == null) {
+    return undefined;
+  }
+
+  if (err instanceof RestError) {
+    return escape(err.getMessage(lang));
+  }
+
+  return err.message;
+}
+
+function getPayload(err?: Error): Record<string, string> | undefined {
+  if (err == null) {
+    return undefined;
+  }
+
+  if (err instanceof RestError) {
+    return payloadlog(err.payload);
+  }
+
+  return undefined;
+}
+
 export default function httpLogging(
   req: FastifyRequest,
   reply: FastifyReply,
   err?: Error,
   level?: keyof ReturnType<typeof logging>,
-) {
+): Partial<ILogFormat> | boolean {
   try {
+    if (req.getIsRequestLogging()) {
+      log.trace('Already logging http logging');
+      return true;
+    }
+
+    req.setRequestLogging();
+
     const urlData = req.urlData();
     const rawUrl = urlData.path ?? cacheNotHit;
 
@@ -62,7 +95,7 @@ export default function httpLogging(
       caches[rawUrl] = excludes.some((matcher) => matcher.test(urlData.path ?? '<>'));
     }
 
-    if (caches[rawUrl] === false) {
+    if (caches[rawUrl] !== false) {
       return true;
     }
 
@@ -72,6 +105,7 @@ export default function httpLogging(
     }
 
     const { duration, headers, queries, params, body } = httplog(req, reply);
+    const payload = getPayload(err);
 
     const contents: ILogFormat = {
       status: reply.raw.statusCode,
@@ -79,22 +113,19 @@ export default function httpLogging(
       duration,
       req_url: req.raw.url ?? '/http/logging/unknown',
       curl_cmd: create(req),
-      err_msg: err !== undefined && err !== null ? escape(err.message) : undefined,
-      err_stk: err !== undefined && err !== null ? escape(err.stack ?? '') : undefined,
+      err_msg: err != null ? getMessage(err, req.headers['accept-language']) : undefined,
+      err_stk: err != null ? escape(err.stack ?? '') : undefined,
       body: {
         req_http_version: req.raw.httpVersion,
-        // sys_instance_id: instance.info.instanceID,
-        // sys_env_id: instance.info.envID,
-        // sys_ami: instance.info.amiID,
         ...headers,
         ...queries,
         ...params,
         ...body,
+        ...(payload ?? {}),
       },
     };
 
     if (reply.statusCode >= 400) {
-      log.trace('catch exception: ', err);
       log.trace(contents);
     }
 
@@ -108,13 +139,15 @@ export default function httpLogging(
   } catch (catched) {
     const catchedError = isError(catched) ?? new Error(`unknown error raised from ${__filename}`);
 
-    log.error({
+    const contents: ILogFormat = {
       err: catchedError,
       curl_cmd: create(req),
       req_method: 'SYS',
       req_url: req.raw.url ?? 'error/response/hook',
       status: httpStatusCodes.INTERNAL_SERVER_ERROR,
-    });
+    };
+
+    log.error(contents);
 
     return false;
   }

@@ -5,12 +5,9 @@ import httpStatusCodes from 'http-status-codes';
 import { isError } from 'my-easy-fp';
 
 export default async function readPokeDetailByName(name: IReqPokeDetailParams['name']) {
-  const code = '44ea7ef11bdb4814af62de4c35d37dc5';
-
   try {
     if (name.toLowerCase() === 'guilmon') {
-      throw new RestError({
-        code,
+      throw RestError.create({
         status: httpStatusCodes.BAD_REQUEST,
         message: 'guilmon is digimon character',
       });
@@ -20,8 +17,7 @@ export default async function readPokeDetailByName(name: IReqPokeDetailParams['n
     const resp = await frame.execute();
 
     if (resp.type === 'fail') {
-      throw new RestError({
-        code,
+      throw RestError.create({
         message: 'poke api call error',
         status: resp.fail.status,
       });
@@ -30,8 +26,7 @@ export default async function readPokeDetailByName(name: IReqPokeDetailParams['n
     return resp.pass;
   } catch (catched) {
     const err = isError(catched) ?? new Error('unknown error raised from readPokeDetailByName');
-    const restErr = new RestError({
-      code,
+    const restErr = RestError.create({
       message: err.message,
       status: httpStatusCodes.INTERNAL_SERVER_ERROR,
     });

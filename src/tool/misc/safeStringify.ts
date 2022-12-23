@@ -1,6 +1,6 @@
-export default function safeStringify<T>(data: T): string {
+export default function safeStringify<T>(data: T, stringify?: (value: any) => string): string {
   try {
-    return JSON.stringify(data);
+    return stringify != null ? stringify(data) : JSON.stringify(data);
   } catch {
     return '{}';
   }

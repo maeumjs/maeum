@@ -18,7 +18,4 @@ export default interface IServer {
 
   /** server port */
   port: number;
-
-  /** swagger host */
-  swaggerHost: string;
 }

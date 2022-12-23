@@ -7,6 +7,7 @@ import fastifyUrlData from '@fastify/url-data';
 import route from '@handler/route';
 import logging from '@logger/bootstrap';
 import optionFactory from '@server/module/optionFactory';
+import loggingFlagPlugin from '@server/plugin/loggingFlagPlugin';
 import onHookGlobalError from '@server/plugin/onHookGlobalError';
 import onHookResponse from '@server/plugin/onHookResponse';
 import responeTime from '@server/plugin/responseTime';
@@ -29,6 +30,7 @@ export async function bootstrap(): Promise<FastifyInstance> {
   server.register(fastifyUrlData);
   server.register(responeTime);
   server.register(fastifyCors);
+  server.register(loggingFlagPlugin);
 
   await server.register(fastifyMultipart, {
     attachFieldsToBody: true,

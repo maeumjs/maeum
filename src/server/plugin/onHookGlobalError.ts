@@ -1,5 +1,4 @@
 import config from '@config/config';
-import logging from '@logger/bootstrap';
 import httpLogging from '@logger/httpLogging';
 import IRestError from '@module/http/IRestError';
 import RestError from '@module/http/RestError';
@@ -10,8 +9,6 @@ import ErrorStackParser from 'error-stack-parser';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { first, isError } from 'my-easy-fp';
-
-const log = logging(__filename);
 
 export default function onHookGlobalError(
   err: Error & { validation?: ErrorObject[] },
@@ -35,16 +32,6 @@ export default function onHookGlobalError(
       status: httpStatusCodes.INTERNAL_SERVER_ERROR,
     };
 
-    log.trace(
-      '>> [onHookGlobalError 404] ------------------------------------------------------------',
-    );
-    log.trace(err.message);
-    log.trace(err.stack);
-    log.trace(replyMessage);
-    log.trace(
-      '>>>>> ---------------------------------------------------------------------------------',
-    );
-
     setImmediate(() => httpLogging(req, reply, err));
     reply.status(httpStatusCodes.BAD_REQUEST).send(body);
 
@@ -61,15 +48,18 @@ export default function onHookGlobalError(
         ? position
         : encrypt(position);
 
+    const message = err.getMessage(req.headers['accept-language']);
+
     const body: IRestError = {
       code,
-      message: err.message,
+      message,
       payload: err.payload,
       status: err.status ?? httpStatusCodes.INTERNAL_SERVER_ERROR,
     };
 
     setImmediate(() => httpLogging(req, reply, err));
     reply.status(err.status ?? httpStatusCodes.INTERNAL_SERVER_ERROR).send(body);
+    return;
   }
 
   const polyglot = getLocales(req.headers['accept-language']);
@@ -78,15 +68,6 @@ export default function onHookGlobalError(
     message: polyglot.t('common.main.error', { allowMissing: true }),
     status: httpStatusCodes.INTERNAL_SERVER_ERROR,
   };
-
-  log.trace(
-    '>> [onHookGlobalError 500] ------------------------------------------------------------',
-  );
-  log.trace(err.message);
-  log.trace(err.stack);
-  log.trace(
-    '>>>>> ---------------------------------------------------------------------------------',
-  );
 
   setImmediate(() => httpLogging(req, reply, err));
   reply.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(body);

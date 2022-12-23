@@ -6,7 +6,8 @@
       "name": "IConfiguration",
       "from": [
         "IServer",
-        "IEndpoint"
+        "IEndpoint",
+        "TRUN_MODE"
       ]
     },
     "export": {
@@ -15,6 +16,7 @@
     },
     "dto": false,
     "schema": {
+      "$id": "IConfiguration",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -47,6 +49,7 @@
     },
     "dto": false,
     "schema": {
+      "$id": "IEndpoint",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "additionalProperties": {
@@ -60,7 +63,9 @@
     "filePath": "src/dto/v1/poke-detail/IPokemonDto.ts",
     "import": {
       "name": "IPokemonDto",
-      "from": []
+      "from": [
+        "IPokemonSpeciesDto"
+      ]
     },
     "export": {
       "name": "IPokemonDto",
@@ -68,6 +73,7 @@
     },
     "dto": true,
     "schema": {
+      "$id": "IPokemonDto",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -126,6 +132,7 @@
     },
     "schema": {
       "$schema": "http://json-schema.org/draft-07/schema#",
+      "$id": "IPokemonSpeciesDto",
       "type": "object",
       "properties": {
         "name": {
@@ -142,6 +149,57 @@
     },
     "dto": true
   },
+  "IReplyHealthDto": {
+    "id": "IReplyHealthDto",
+    "filePath": "src/dto/common/IReplyHealthDto.ts",
+    "import": {
+      "name": "IReplyHealthDto",
+      "from": [
+        "TRUN_MODE"
+      ]
+    },
+    "export": {
+      "name": "IReplyHealthDto",
+      "to": []
+    },
+    "dto": false,
+    "schema": {
+      "$id": "IReplyHealthDto",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "envMode": {
+          "type": "string",
+          "description": "NODE_ENV"
+        },
+        "runMode": {
+          "$ref": "TRUN_MODE",
+          "description": "server run mode"
+        },
+        "port": {
+          "type": "number",
+          "description": "server port"
+        },
+        "i18n": {
+          "type": "object",
+          "properties": {
+            "language": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "language"
+          ]
+        }
+      },
+      "required": [
+        "envMode",
+        "runMode",
+        "port",
+        "i18n"
+      ]
+    }
+  },
   "IReqPokeDetailParams": {
     "id": "IReqPokeDetailParams",
     "filePath": "src/dto/v1/poke-detail/IReqPokeDetail.ts",
@@ -155,6 +213,7 @@
     },
     "dto": false,
     "schema": {
+      "$id": "IReqPokeDetailParams",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -181,6 +240,7 @@
     },
     "dto": false,
     "schema": {
+      "$id": "IReqPokeDetailQuerystring",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -208,6 +268,7 @@
     },
     "dto": false,
     "schema": {
+      "$id": "IRestError",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -234,7 +295,9 @@
     "filePath": "src/config/interface/IServer.ts",
     "import": {
       "name": "IServer",
-      "from": []
+      "from": [
+        "TRUN_MODE"
+      ]
     },
     "export": {
       "name": "IServer",
@@ -244,18 +307,12 @@
     },
     "dto": false,
     "schema": {
+      "$id": "IServer",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
         "runMode": {
-          "type": "string",
-          "enum": [
-            "local",
-            "develop",
-            "qa",
-            "stage",
-            "production"
-          ],
+          "$ref": "TRUN_MODE",
           "description": "server run mode"
         },
         "envMode": {
@@ -273,10 +330,6 @@
         "port": {
           "type": "number",
           "description": "server port"
-        },
-        "swaggerHost": {
-          "type": "string",
-          "description": "swagger host"
         }
       },
       "required": [
@@ -284,10 +337,38 @@
         "envMode",
         "logLevel",
         "caller",
-        "port",
-        "swaggerHost"
+        "port"
       ],
       "description": "Maeum Boilerplate Server Application configuration"
+    }
+  },
+  "TRUN_MODE": {
+    "id": "TRUN_MODE",
+    "filePath": "src/config/interface/TRUN_MODE.ts",
+    "import": {
+      "name": "TRUN_MODE",
+      "from": []
+    },
+    "export": {
+      "name": "TRUN_MODE",
+      "to": [
+        "IReplyHealthDto",
+        "IConfiguration",
+        "IServer"
+      ]
+    },
+    "dto": false,
+    "schema": {
+      "$id": "TRUN_MODE",
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "string",
+      "enum": [
+        "local",
+        "develop",
+        "qa",
+        "stage",
+        "production"
+      ]
     }
   }
 }

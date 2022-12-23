@@ -1,6 +1,5 @@
 import { FastifyError, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
-import { isEmpty } from 'my-easy-fp';
 
 const symbolRequestTime = Symbol('RequestTimer');
 const symbolServerTiming = Symbol('ServerTiming');
@@ -22,7 +21,7 @@ function responseTime(
   const responseTimeHeaderKey = options.header || 'X-Response-Time';
 
   // Check the options, and corrects with the default values if inadequate
-  if (isEmpty(options.digits) || Number.isNaN(options.digits) || options.digits < 0) {
+  if (options.digits == null || Number.isNaN(options.digits) || options.digits < 0) {
     newOptions.digits = 2;
   }
 
@@ -51,7 +50,7 @@ function responseTime(
       const serverTiming = replyTo[symbolServerTiming] ?? {};
       const headers = [...Object.values(serverTiming)];
 
-      if (headers.length) {
+      if (headers.length > 0) {
         reply.header('Server-Timing', headers.join(','));
       }
 

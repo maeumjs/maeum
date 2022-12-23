@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';
 import httpStatusCodes from 'http-status-codes';
-import { isEmpty, isError } from 'my-easy-fp';
+import { isError } from 'my-easy-fp';
 import { existsSync } from 'my-node-fp';
 import os from 'os';
 import path from 'path';
@@ -63,7 +63,7 @@ function getFormatter(useColor: boolean = false) {
           if (filename === undefined || filename === null) {
             const prefix = colorizer(
               `[${timestamp ?? ''} ${level}${
-                isEmpty(other.req_method) ? '' : ` ${other.req_method}`
+                other.req_method == null ? '' : ` ${other.req_method}`
               }]:`,
             );
 
@@ -71,9 +71,7 @@ function getFormatter(useColor: boolean = false) {
           }
 
           const prefix = `${colorizer(
-            `[${timestamp ?? ''} ${level}${
-              isEmpty(other.req_method) ? '' : ` ${other.req_method}`
-            }`,
+            `[${timestamp ?? ''} ${level}${other.req_method == null ? '' : ` ${other.req_method}`}`,
           )}${colors.cyan(filename)}${colorizer(']:')}`;
 
           return `${prefix} ${JSON.stringify(other)}`;

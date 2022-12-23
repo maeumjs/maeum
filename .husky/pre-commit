@@ -22,5 +22,3 @@ npm run build
 echo -e "\n ${yellow}* code build end.${no_color}"
 
 echo -e "\n ${green}* pre-commit hook was SUCCESSFUL${no_color} \n"
-
-

@@ -46,7 +46,7 @@
       "@module/*": ["src/module/*"],
       "@root/app": ["src/app"],
       "@schema/*": ["src/schema/*"],
-      "@serializer/*": ["src/serializer/*"],
+      "@transform/*": ["src/transform/*"],
       "@storage/*": ["src/storage/*"],
       "@tool/*": ["src/tool/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,

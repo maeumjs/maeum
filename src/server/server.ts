@@ -6,6 +6,7 @@ import fastifySwaggerUI from '@fastify/swagger-ui';
 import fastifyUrlData from '@fastify/url-data';
 import route from '@handler/route';
 import logging from '@logger/bootstrap';
+import { TLOG_PROTOCOL } from '@logger/interface/TLOG_PROTOCOL';
 import optionFactory from '@server/module/optionFactory';
 import loggingFlagPlugin from '@server/plugin/loggingFlagPlugin';
 import onHookGlobalError from '@server/plugin/onHookGlobalError';
@@ -16,7 +17,6 @@ import swaggerUiConfig from '@server/plugin/swaggerUiConfig';
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import httpStatusCodes from 'http-status-codes';
-import { isNotEmpty } from 'my-easy-fp';
 
 const log = logging(__filename);
 
@@ -60,17 +60,17 @@ export function listen(port: number): void {
     status: httpStatusCodes.OK,
     duration: -1,
     req_method: 'SYS',
-    req_url: `server/start/port:${port}/pid:${process.pid}`,
+    req_url: `${TLOG_PROTOCOL.FASTIFY}start/port:${port}/pid:${process.pid}`,
     body: { port, run_mode: config.server.runMode },
   });
 
   server.listen({ port, host: '0.0.0.0' }, (err, address) => {
-    if (isNotEmpty(err)) {
+    if (err != null) {
       log.crit({
         status: httpStatusCodes.INTERNAL_SERVER_ERROR,
         duration: -1,
         req_method: 'SYS',
-        req_url: `server/start/port:${port}/pid:${process.pid}`,
+        req_url: `${TLOG_PROTOCOL.FASTIFY}start/port:${port}/pid:${process.pid}`,
         err_msg: err.message,
         err_stk: err.stack,
         body: { port, run_mode: config.server.runMode, address },
@@ -83,7 +83,7 @@ export function listen(port: number): void {
       status: httpStatusCodes.OK,
       duration: -1,
       req_method: 'SYS',
-      req_url: `localhost:${port}/${process.pid}/start`,
+      req_url: `${TLOG_PROTOCOL.FASTIFY}localhost:${port}/${process.pid}/start`,
       body: { port, run_mode: config.server.runMode, address },
     });
 

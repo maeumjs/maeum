@@ -3,7 +3,8 @@ import {
   IReqPokeDetailQuerystring,
 } from '@dto/v1/poke-detail/IReqPokeDetail';
 import readPokeDetailByName from '@module/v1/readPokeDetailByName';
-import serializerPokemonToWithTid from '@serializer/v1/serializerPokemonToWithTid';
+import transformPokemonToWithTid from '@transform/v1/transformPokemonToWithTid';
+
 import { FastifyRequest, RouteShorthandOptions } from 'fastify';
 
 export const option: RouteShorthandOptions = {
@@ -24,6 +25,6 @@ export default async function readPokeDetailByNameHandler(
   req: FastifyRequest<{ Querystring: IReqPokeDetailQuerystring; Params: IReqPokeDetailParams }>,
 ) {
   const resp = await readPokeDetailByName(req.params.name);
-  const serialized = serializerPokemonToWithTid(resp.data, req.query.tid);
+  const serialized = transformPokemonToWithTid(resp.data, req.query.tid);
   return serialized;
 }

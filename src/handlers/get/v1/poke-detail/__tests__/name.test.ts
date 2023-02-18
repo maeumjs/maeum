@@ -2,7 +2,7 @@ import logging from '#logger/bootstrap';
 import { bootstrap, unbootstrap } from '#server/app';
 import { FastifyInstance } from 'fastify';
 import 'jest';
-import urlcat from 'urlcat';
+import urlna from 'url-naong';
 import * as uuid from 'uuid';
 
 const share: { app: FastifyInstance } = {} as any;
@@ -17,7 +17,7 @@ beforeAll(async () => {
 test('pokemon detail test', async () => {
   const res = await share.app.inject({
     method: 'GET',
-    url: urlcat('', '/v1/poke-detail/:name', { name: 'pikachu', tid: uuid.v4() }),
+    url: urlna('', '/v1/poke-detail/:name', { name: 'pikachu', tid: uuid.v4() }),
   });
 
   log.trace(res.body);

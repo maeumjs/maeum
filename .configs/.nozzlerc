@@ -20,6 +20,7 @@
 
   // ts-json-schema-generator option
   "generatorOption": {
-    "additionalProperties": true
+    "additionalProperties": true,
+    "extraTags": ["datetime-formatex", "example"]
   }
 }

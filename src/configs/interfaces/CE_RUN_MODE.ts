@@ -7,4 +7,4 @@ export const CE_RUN_MODE = {
   PRODUCTION: 'production',
 } as const;
 
-export type CE_RUN_MODE = typeof CE_RUN_MODE[keyof typeof CE_RUN_MODE];
+export type CE_RUN_MODE = (typeof CE_RUN_MODE)[keyof typeof CE_RUN_MODE];

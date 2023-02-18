@@ -29,7 +29,7 @@ export default function optionFactory() {
   const server = fastify<Server, IncomingMessage, ServerResponse>({
     ...option,
     schemaController: {
-      bucket: (_parentSchemas?: JSONSchema7) => {
+      bucket: (_parentSchemas?: unknown) => {
         return {
           add(schema: JSONSchema7): FastifyInstance<Server, IncomingMessage, ServerResponse> {
             addSchema(schema);
@@ -45,10 +45,10 @@ export default function optionFactory() {
       },
       compilersFactory: {
         buildValidator() {
-          return ({ schema }) => ajv.compile(schema);
+          return ({ schema }: { schema: any }) => ajv.compile(schema);
         },
         buildSerializer(externalSchemas: FJSOptions['schema'], options: FJSOptions) {
-          return ({ schema }) => {
+          return ({ schema }: { schema: any }) => {
             const fjsoption = options ?? {};
 
             fjsoption.schema = externalSchemas;
@@ -58,7 +58,7 @@ export default function optionFactory() {
             return (data: unknown) => stringify(data);
           };
         },
-      },
+      } as any,
     },
   });
 

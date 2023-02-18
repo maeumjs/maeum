@@ -14,13 +14,15 @@ module.exports = {
   },
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
+    // 'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'airbnb-base',
     'airbnb-typescript/base',
+    'prettier',
     'plugin:prettier/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
   ],
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier', 'import'],
   rules: {
     '@typescript-eslint/naming-convention': [
       'error',
@@ -87,6 +89,7 @@ module.exports = {
         // always try to resolve types under `<root>@types` directory even it doesn't contain any source code,
         // like `@types/unist`
         alwaysTryTypes: true,
+        project: 'tsconfig.eslint.json',
       },
     },
   },

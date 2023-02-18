@@ -1,4 +1,8 @@
 import { FastifyInstance } from 'fastify';
+import {
+  IReqPokeDetailParams,
+  IReqPokeDetailQuerystring,
+} from '../dto/v1/poke-detail/IReqPokeDetail';
 import errorHandler_PJ1ZVdvZdoDszi9bEsBZ3kK1Ps9exYz1, {
   option as option_PJ1ZVdvZdoDszi9bEsBZ3kK1Ps9exYz1,
 } from './get/error';
@@ -11,10 +15,6 @@ import indexHandler_S3bRkzOADg7woeHV595CNvAFpaqtKGP9, {
 import readPokeDetailByNameHandler_azm7AyTKp3gXvsxGx1OUnVrEH7b0dgLE, {
   option as option_azm7AyTKp3gXvsxGx1OUnVrEH7b0dgLE,
 } from './get/v1/poke-detail/[name]';
-import {
-  IReqPokeDetailParams,
-  IReqPokeDetailQuerystring,
-} from '../dto/v1/poke-detail/IReqPokeDetail';
 
 export default function routing(fastify: FastifyInstance): void {
   fastify.get(

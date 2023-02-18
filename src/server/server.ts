@@ -1,6 +1,6 @@
 import config from '#configs/config';
 import logging from '#logger/bootstrap';
-import { TLOG_PROTOCOL } from '#logger/interface/TLOG_PROTOCOL';
+import { CE_LOG_PROTOCOL } from '#logger/interface/CE_LOG_PROTOCOL';
 import optionFactory from '#server/module/optionFactory';
 import loggingFlagPlugin from '#server/plugin/loggingFlagPlugin';
 import onHookGlobalError from '#server/plugin/onHookGlobalError';
@@ -60,7 +60,7 @@ export function listen(port: number): void {
     status: httpStatusCodes.OK,
     duration: -1,
     req_method: 'SYS',
-    req_url: `${TLOG_PROTOCOL.FASTIFY}start/port:${port}/pid:${process.pid}`,
+    req_url: `${CE_LOG_PROTOCOL.FASTIFY}start/port:${port}/pid:${process.pid}`,
     body: { port, run_mode: config.server.runMode },
   });
 
@@ -70,7 +70,7 @@ export function listen(port: number): void {
         status: httpStatusCodes.INTERNAL_SERVER_ERROR,
         duration: -1,
         req_method: 'SYS',
-        req_url: `${TLOG_PROTOCOL.FASTIFY}start/port:${port}/pid:${process.pid}`,
+        req_url: `${CE_LOG_PROTOCOL.FASTIFY}start/port:${port}/pid:${process.pid}`,
         err_msg: err.message,
         err_stk: err.stack,
         body: { port, run_mode: config.server.runMode, address },
@@ -83,7 +83,7 @@ export function listen(port: number): void {
       status: httpStatusCodes.OK,
       duration: -1,
       req_method: 'SYS',
-      req_url: `${TLOG_PROTOCOL.FASTIFY}localhost:${port}/${process.pid}/start`,
+      req_url: `${CE_LOG_PROTOCOL.FASTIFY}localhost:${port}/${process.pid}/start`,
       body: { port, run_mode: config.server.runMode, address },
     });
 

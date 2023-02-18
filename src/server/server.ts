@@ -1,22 +1,22 @@
-import config from '@config/config';
+import config from '#configs/config';
+import logging from '#logger/bootstrap';
+import { TLOG_PROTOCOL } from '#logger/interface/TLOG_PROTOCOL';
+import optionFactory from '#server/module/optionFactory';
+import loggingFlagPlugin from '#server/plugin/loggingFlagPlugin';
+import onHookGlobalError from '#server/plugin/onHookGlobalError';
+import onHookResponse from '#server/plugin/onHookResponse';
+import responeTime from '#server/plugin/responseTime';
+import swaggerConfig from '#server/plugin/swaggerConfig';
+import swaggerUiConfig from '#server/plugin/swaggerUiConfig';
 import fastifyCors from '@fastify/cors';
 import fastifyMultipart from '@fastify/multipart';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import fastifyUrlData from '@fastify/url-data';
-import route from '@handler/route';
-import logging from '@logger/bootstrap';
-import { TLOG_PROTOCOL } from '@logger/interface/TLOG_PROTOCOL';
-import optionFactory from '@server/module/optionFactory';
-import loggingFlagPlugin from '@server/plugin/loggingFlagPlugin';
-import onHookGlobalError from '@server/plugin/onHookGlobalError';
-import onHookResponse from '@server/plugin/onHookResponse';
-import responeTime from '@server/plugin/responseTime';
-import swaggerConfig from '@server/plugin/swaggerConfig';
-import swaggerUiConfig from '@server/plugin/swaggerUiConfig';
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import httpStatusCodes from 'http-status-codes';
+import route from 'src/handlers/route';
 
 const log = logging(__filename);
 

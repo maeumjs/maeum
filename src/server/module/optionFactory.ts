@@ -1,5 +1,5 @@
-import ajv, { ajvOptions } from '@config/ajv';
-import { addSchema, plainJsonSchema } from '@config/json-schema';
+import ajv, { ajvOptions } from '#configs/ajvbox';
+import { addSchema, plainJsonSchema } from '#configs/json-schema';
 import fastJsonStringify, { Options as FJSOptions } from 'fast-json-stringify';
 import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http';

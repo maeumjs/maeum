@@ -1,6 +1,6 @@
-import logging from '@logger/bootstrap';
-import safeStringify from '@tool/misc/safeStringify';
+import logging from '#logger/bootstrap';
 import httpStatusCodes from 'http-status-codes';
+import safeStringify from 'src/tools/misc/safeStringify';
 
 const log = logging(__filename);
 

@@ -1,3 +1,3 @@
-import { start } from '@server/app';
+import { start } from '#server/app';
 
 start();

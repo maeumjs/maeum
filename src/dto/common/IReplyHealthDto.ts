@@ -1,4 +1,4 @@
-import IServer from '@config/interface/IServer';
+import IServer from '#configs/interfaces/IServer';
 
 export default interface IReplyHealthDto {
   envMode: IServer['envMode'];

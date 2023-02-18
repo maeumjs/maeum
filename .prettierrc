@@ -13,8 +13,8 @@
     },
     {
       "files": [
-        ".config/.tjsclirc",
-        ".config/.fastmakerrc"
+        ".configs/.nozzlerc",
+        ".configs/.fastmakerrc"
       ],
       "options": {
         "parser": "json"

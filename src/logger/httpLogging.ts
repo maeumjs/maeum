@@ -1,16 +1,16 @@
-import config from '@config/config';
-import logging from '@logger/bootstrap';
-import { ILogFormat } from '@logger/interface/ILogFormat';
-import getHttpMethod from '@logger/module/getHttpMethod';
-import httplog from '@logger/module/httplog';
-import payloadlog from '@logger/module/payloadlog';
-import RestError from '@module/http/RestError';
-import escape from '@tool/misc/escape';
+import config from '#configs/config';
+import logging from '#logger/bootstrap';
+import { ILogFormat } from '#logger/interface/ILogFormat';
+import getHttpMethod from '#logger/module/getHttpMethod';
+import httplog from '#logger/module/httplog';
+import payloadlog from '#logger/module/payloadlog';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { createByfastify3 } from 'jin-curlize';
 import { isError } from 'my-easy-fp';
 import { pathToRegexp } from 'path-to-regexp';
+import RestError from 'src/modules/http/RestError';
+import escape from 'src/tools/misc/escape';
 
 const log = logging(__filename);
 

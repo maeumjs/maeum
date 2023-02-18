@@ -1,4 +1,4 @@
-import IPokemonSpeciesDto from '@dto/v1/poke-detail/IPokemonSpeciesDto';
+import IPokemonSpeciesDto from '#dto/v1/poke-detail/IPokemonSpeciesDto';
 
 /**
  * Pokemon DTO

@@ -1,4 +1,4 @@
-import getRequestDuration from '@logger/module/getRequestDuration';
+import getRequestDuration from '#logger/module/getRequestDuration';
 import { snakeCase } from 'change-case';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { isFalse } from 'my-easy-fp';

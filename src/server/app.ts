@@ -1,14 +1,14 @@
-import config, { bootstrap as configBootstrap } from '@config/config';
-import { bootstrap as schemaBootstrap } from '@config/json-schema';
-import getRunMode from '@config/module/getRunMode';
-import logging from '@logger/bootstrap';
-import uncaughtExceptionHandlerBootstrap from '@logger/module/uncaughtExceptionHandler';
-import { bootstrap as httpBootstrap, listen, unbootstrap as httpUnbootstrap } from '@server/server';
-import { bootstrap as i18nBootstrap } from '@tool/i18n/i18n';
+import config, { bootstrap as configBootstrap } from '#configs/config';
+import { bootstrap as schemaBootstrap } from '#configs/json-schema';
+import getRunMode from '#configs/module/getRunMode';
+import logging from '#logger/bootstrap';
+import uncaughtExceptionHandlerBootstrap from '#logger/module/uncaughtExceptionHandler';
+import { bootstrap as httpBootstrap, listen, unbootstrap as httpUnbootstrap } from '#server/server';
 import { config as dotenvConfig } from 'dotenv';
 import httpStatusCodes from 'http-status-codes';
 import { isError } from 'my-easy-fp';
 import path from 'path';
+import { bootstrap as i18nBootstrap } from 'src/tools/i18n/i18n';
 
 const log = logging(__filename);
 

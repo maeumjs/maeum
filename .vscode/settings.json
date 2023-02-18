@@ -28,8 +28,7 @@
   },
   "files.associations": {
     ".fastmakerrc": "jsonc",
-    ".tjsclirc": "jsonc",
-    ".ctjsrc": "jsonc",
+    ".nozzlerc": "jsonc",
     "config.*.json": "jsonc"
   },
   "files.eol": "\n",

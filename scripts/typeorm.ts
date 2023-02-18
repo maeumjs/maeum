@@ -1,5 +1,5 @@
-import { bootstrap as configBootstrap } from '@config/config';
-import getRunMode from '@config/module/getRunMode';
+import { bootstrap as configBootstrap } from '#configs/config';
+import getRunMode from '#configs/module/getRunMode';
 import { config as dotenvConfig } from 'dotenv';
 import path from 'path';
 

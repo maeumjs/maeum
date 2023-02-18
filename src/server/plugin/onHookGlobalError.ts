@@ -1,14 +1,14 @@
-import config from '@config/config';
-import httpLogging from '@logger/httpLogging';
-import IRestError from '@module/http/IRestError';
-import RestError from '@module/http/RestError';
-import encrypt from '@tool/cipher/encrypt';
-import getLocales from '@tool/i18n/getLocales';
+import config from '#configs/config';
+import httpLogging from '#logger/httpLogging';
 import { ErrorObject } from 'ajv';
 import ErrorStackParser from 'error-stack-parser';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { first, isError } from 'my-easy-fp';
+import IRestError from 'src/modules/http/IRestError';
+import RestError from 'src/modules/http/RestError';
+import encrypt from 'src/tools/cipher/encrypt';
+import getLocales from 'src/tools/i18n/getLocales';
 
 export default function onHookGlobalError(
   err: Error & { validation?: ErrorObject[] },

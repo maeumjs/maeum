@@ -36,19 +36,17 @@
     // "moduleResolution": "node",                       /* Specify how TypeScript looks up a file from a given module specifier. */
     "baseUrl": "./" /* Specify the base directory to resolve non-relative module names. */,
     "paths": {
-      "@config/*": ["src/config/*"],
-      "@dto/*": ["src/dto/*"],
-      "@entity/*": ["src/entity/*"],
-      "@server/*": ["src/server/*"],
-      "@frame/*": ["src/frame/*"],
-      "@handler/*": ["src/handler/*"],
-      "@logger/*": ["src/logger/*"],
-      "@module/*": ["src/module/*"],
-      "@root/app": ["src/app"],
-      "@schema/*": ["src/schema/*"],
-      "@transform/*": ["src/transform/*"],
-      "@storage/*": ["src/storage/*"],
-      "@tool/*": ["src/tool/*"]
+      "#configs/*": ["src/configs/*"],
+      "#dto/*": ["src/dto/*"],
+      "#entity/*": ["src/entity/*"],
+      "#server/*": ["src/server/*"],
+      "#frames/*": ["src/frames/*"],
+      "#handlers/*": ["src/handlers/*"],
+      "#logger/*": ["src/logger/*"],
+      "#modules/*": ["src/modules/*"],
+      "#transforms/*": ["src/transforms/*"],
+      "#storages/*": ["src/storages/*"],
+      "#tools/*": ["src/tools/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": []                                   /* Specify multiple folders that act like `./node_modules/@types`. */,

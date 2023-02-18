@@ -1,6 +1,6 @@
-import getRunMode from '@config/module/getRunMode';
-import { ILogFormat } from '@logger/interface/ILogFormat';
-import ll from '@logger/ll';
+import getRunMode from '#configs/module/getRunMode';
+import { ILogFormat } from '#logger/interface/ILogFormat';
+import ll from '#logger/ll';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';

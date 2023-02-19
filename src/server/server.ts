@@ -1,11 +1,12 @@
 import config from '#configs/config';
+import route from '#handlers/route';
 import logging from '#logger/bootstrap';
 import { CE_LOG_PROTOCOL } from '#logger/interface/CE_LOG_PROTOCOL';
-import optionFactory from '#server/module/optionFactory';
+import { CE_HEADER_KEY } from '#server/modules/CE_HEADER_KEY';
+import optionFactory from '#server/modules/optionFactory';
 import loggingFlagPlugin from '#server/plugin/loggingFlagPlugin';
 import onHookGlobalError from '#server/plugin/onHookGlobalError';
 import onHookResponse from '#server/plugin/onHookResponse';
-import responeTime from '#server/plugin/responseTime';
 import swaggerConfig from '#server/plugin/swaggerConfig';
 import swaggerUiConfig from '#server/plugin/swaggerUiConfig';
 import fastifyCors from '@fastify/cors';
@@ -16,7 +17,6 @@ import fastifyUrlData from '@fastify/url-data';
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import httpStatusCodes from 'http-status-codes';
-import route from 'src/handlers/route';
 
 const log = logging(__filename);
 
@@ -27,10 +27,7 @@ export async function bootstrap(): Promise<FastifyInstance> {
 
   server = fastify;
 
-  server.register(fastifyUrlData);
-  server.register(responeTime);
-  server.register(fastifyCors);
-  server.register(loggingFlagPlugin);
+  await server.register(fastifyUrlData).register(fastifyCors).register(loggingFlagPlugin);
 
   await server.register(fastifyMultipart, {
     attachFieldsToBody: true,
@@ -45,6 +42,20 @@ export async function bootstrap(): Promise<FastifyInstance> {
 
   server.setErrorHandler(onHookGlobalError);
   server.addHook('onResponse', onHookResponse);
+
+  // Replace responseTime plugin
+  // via: https://www.fastify.io/docs/Reference/Reply/#getresponsetime
+  if (config.server.runMode !== 'production') {
+    server.addHook('onSend', (_req, reply, _data, done) => {
+      reply.header(CE_HEADER_KEY.RESPONSE_TIME, reply.getResponseTime()).then(
+        () => undefined,
+        (err) => {
+          log.trace(err);
+        },
+      );
+      done();
+    });
+  }
 
   route(server);
 

@@ -24,6 +24,7 @@
       "files": [
         ".vscode/launch.json",
         ".vscode/settings.json",
+        "tsconfig.eslint.json",
         "tsconfig.prod.json",
         "tsconfig.json"
       ],

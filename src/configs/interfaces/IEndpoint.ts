@@ -1,4 +1,4 @@
 /** Connected RESTful server endpoint */
-export default interface IEndpoint {
-  [key: string]: string;
-}
+type TEndpoint = Record<string, string>;
+
+export default TEndpoint;

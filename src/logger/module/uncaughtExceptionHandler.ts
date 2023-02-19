@@ -1,6 +1,6 @@
 import logging from '#logger/bootstrap';
+import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import httpStatusCodes from 'http-status-codes';
-import safeStringify from 'src/tools/misc/safeStringify';
 
 const log = logging(__filename);
 
@@ -21,7 +21,7 @@ export default function bootstrap() {
     log.trace('unhandledRejection: ', reason);
 
     const message =
-      reason == null ? `unknown error by [unhandledRejection] / ${reason}` : safeStringify(reason);
+      reason == null ? 'unknown error by [unhandledRejection]' : escapeSafeStringify(reason);
 
     log.crit({
       status: httpStatusCodes.INTERNAL_SERVER_ERROR,

@@ -10,13 +10,9 @@ export default function readConfigFile(runMode: string): IConfiguration {
   const dirname = path.join(__dirname, '..', 'files');
   const filename = `config.${runMode}.json`;
   const configBuf = fs.readFileSync(path.join(dirname, filename));
-  const parsed = parse(configBuf.toString());
+  const parsed = parse(configBuf.toString()) as IConfiguration;
 
   log.trace('filename: ', filename);
-
-  if (parsed.endpoint === undefined) {
-    return { ...parsed, endpoint: {} };
-  }
 
   return parsed;
 }

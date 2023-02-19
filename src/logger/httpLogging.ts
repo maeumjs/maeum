@@ -4,18 +4,19 @@ import { ILogFormat } from '#logger/interface/ILogFormat';
 import getHttpMethod from '#logger/module/getHttpMethod';
 import httplog from '#logger/module/httplog';
 import payloadlog from '#logger/module/payloadlog';
+import RestError from '#modules/http/RestError';
+import escape from '#tools/misc/escape';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { createByfastify3 } from 'jin-curlize';
 import { isError } from 'my-easy-fp';
 import { pathToRegexp } from 'path-to-regexp';
-import RestError from 'src/modules/http/RestError';
-import escape from 'src/tools/misc/escape';
 
 const log = logging(__filename);
 
 const cacheNotHit = Symbol('exclude-cache-not-hit');
-const caches: Record<string | typeof cacheNotHit, boolean> = { [cacheNotHit]: false };
+const caches: Partial<Record<string | typeof cacheNotHit, boolean>> = { [cacheNotHit]: false };
+
 const excludes = ['/health', '/', '/swagger.io', '/swagger.io/:suburl*'].map((url) =>
   pathToRegexp(url),
 );
@@ -27,7 +28,7 @@ function create(req: FastifyRequest): string | undefined {
   try {
     const urlData = req.urlData();
 
-    if (cacheCurls[urlData.path ?? cacheNotHit] === true) {
+    if (cacheCurls[urlData.path ?? cacheNotHit]) {
       return 'n/a';
     }
 
@@ -67,7 +68,7 @@ function getPayload(err?: Error): Record<string, string> | undefined {
   }
 
   if (err instanceof RestError) {
-    return payloadlog(err.payload);
+    return payloadlog(err.payload, 'rppl');
   }
 
   return undefined;
@@ -100,9 +101,7 @@ export default function httpLogging(
     }
 
     // check urlData.path in exclude curl command
-    if (cacheCurls[rawUrl] == null) {
-      cacheCurls[rawUrl] = excludeCurls.some((matcher) => matcher.test(urlData.path ?? '<>'));
-    }
+    cacheCurls[rawUrl] = excludeCurls.some((matcher) => matcher.test(urlData.path ?? '<>'));
 
     const { duration, headers, queries, params, body } = httplog(req, reply);
     const payload = getPayload(err);
@@ -129,7 +128,7 @@ export default function httpLogging(
       log.trace(contents);
     }
 
-    if (level === undefined || level === null) {
+    if (level == null) {
       log.info(contents);
     } else {
       log[level](contents);

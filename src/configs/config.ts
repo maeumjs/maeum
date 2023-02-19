@@ -8,8 +8,20 @@ import { ReadonlyDeep } from 'type-fest';
 
 const log = logging(__filename);
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const internalConfig: IConfiguration = {} as any;
 const config: ReadonlyDeep<IConfiguration> = internalConfig;
+
+let isPortChange: boolean = false;
+
+export function changePort(port: number) {
+  if (isFalse(isPortChange)) {
+    internalConfig.server.port = port;
+    isPortChange = true;
+  } else {
+    throw new Error('port can change only once');
+  }
+}
 
 export async function bootstrap() {
   try {
@@ -21,9 +33,11 @@ export async function bootstrap() {
 
     if (isFalse(validationResult)) {
       throw new Error(
-        `Error occured from, configuration file reading, \n${validator.errors
-          ?.map((error) => `${error.instancePath}:${error.message}`)
-          ?.join('\n')}`,
+        `Error occured from, configuration file reading, \n${
+          validator.errors
+            ?.map((error) => `${error.instancePath}:${error.message ?? 'unknown error'}`)
+            ?.join('\n') ?? ''
+        }`,
       );
     }
 

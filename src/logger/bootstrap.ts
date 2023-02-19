@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument */
 import getRunMode from '#configs/module/getRunMode';
 import { ILogFormat } from '#logger/interface/ILogFormat';
 import ll from '#logger/ll';
@@ -41,6 +42,18 @@ function getLogLevel(level?: string): Extract<keyof winston.config.SyslogConfigS
   return 'info';
 }
 
+function getSafeTimestamp(literal: unknown): string {
+  try {
+    if (typeof literal !== 'string') {
+      throw new Error('invalid timestamp string');
+    }
+
+    return dayjs(literal).format('HH:mm:ss.SSS');
+  } catch {
+    return dayjs().format('HH:mm:ss.SSS');
+  }
+}
+
 function getFormatter(useColor: boolean = false) {
   if (useColor) {
     return winston.format.combine(
@@ -57,21 +70,20 @@ function getFormatter(useColor: boolean = false) {
             pid: _pid,
             ...other
           } = info;
-          const timestamp = dayjs(isoTimestamp).format('HH:mm:ss.SSS');
+          const timestamp = getSafeTimestamp(isoTimestamp);
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           const colorizer = colors[level] ?? colors.gray;
 
           if (filename === undefined || filename === null) {
             const prefix = colorizer(
-              `[${timestamp ?? ''} ${level}${
-                other.req_method == null ? '' : ` ${other.req_method}`
-              }]:`,
+              `[${timestamp} ${level}${other.req_method == null ? '' : ` ${other.req_method}`}]:`,
             );
 
             return `${prefix} ${JSON.stringify(other)}`;
           }
 
           const prefix = `${colorizer(
-            `[${timestamp ?? ''} ${level}${other.req_method == null ? '' : ` ${other.req_method}`}`,
+            `[${timestamp} ${level}${other.req_method == null ? '' : ` ${other.req_method}`}`,
           )}${colors.cyan(filename)}${colorizer(']:')}`;
 
           return `${prefix} ${JSON.stringify(other)}`;
@@ -135,7 +147,7 @@ function logging(fullname: string) {
       const reqMethod = content.req_method ?? 'SYS';
 
       const { err_msg, err_stk } =
-        content.err !== null && content.err !== undefined
+        content.err != null
           ? { err_msg: content.err.message, err_stk: content.err.stack }
           : { err_msg: content.err_msg, err_stk: content.err_stk };
 

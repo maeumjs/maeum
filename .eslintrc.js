@@ -6,15 +6,13 @@ module.exports = {
   ignorePatterns: ['__test__/*', '__tests__/*'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    // ecmaVersion: 2020,
     project: 'tsconfig.eslint.json',
     sourceType: 'module',
-    tsconfigRootDir: __dirname,
-    createDefaultProgram: true,
   },
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',
-    // 'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:@typescript-eslint/strict',
     'airbnb-base',
     'airbnb-typescript/base',
     'prettier',
@@ -83,6 +81,28 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['scripts/**/*.ts'],
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': ['off'],
+        'no-console': ['off'],
+      },
+    },
+    {
+      files: ['src/tools/i18n/i18n.ts'],
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': ['off'],
+      },
+    },
+    {
+      files: ['**/__tests__/*.ts'],
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': ['off'],
+        'no-console': ['off'],
+      },
+    },
+  ],
   settings: {
     'import/resolver': {
       typescript: {

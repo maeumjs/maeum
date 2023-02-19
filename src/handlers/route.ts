@@ -1,7 +1,7 @@
-import { FastifyInstance } from 'fastify';
+import type { FastifyInstance } from 'fastify';
 import {
-  IReqPokeDetailParams,
-  IReqPokeDetailQuerystring,
+  type IReqPokeDetailParams,
+  type IReqPokeDetailQuerystring,
 } from '../dto/v1/poke-detail/IReqPokeDetail';
 import errorHandler_PJ1ZVdvZdoDszi9bEsBZ3kK1Ps9exYz1, {
   option as option_PJ1ZVdvZdoDszi9bEsBZ3kK1Ps9exYz1,

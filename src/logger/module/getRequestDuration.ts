@@ -1,3 +1,5 @@
+import { atOrUndefined } from 'my-easy-fp';
+
 export default function getRequestDuration(time?: string | string[] | number) {
   if (time == null) {
     return -1;
@@ -8,7 +10,7 @@ export default function getRequestDuration(time?: string | string[] | number) {
   }
 
   if (Array.isArray(time)) {
-    const head = time.at(0);
+    const head = atOrUndefined(time, 0);
 
     if (head == null) {
       return -1;

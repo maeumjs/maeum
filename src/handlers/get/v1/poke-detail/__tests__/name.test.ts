@@ -24,5 +24,5 @@ test('pokemon detail test', async () => {
 });
 
 afterAll(async () => {
-  unbootstrap();
+  await unbootstrap();
 });

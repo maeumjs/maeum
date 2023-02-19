@@ -1,5 +1,6 @@
 export type TJSONValue = string | number | boolean | IJSONObject | IJSONArray | undefined;
 
+// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 export interface IJSONObject {
   [x: string]: TJSONValue;
 }

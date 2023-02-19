@@ -1,8 +1,8 @@
 import { IReqPokeDetailParams } from '#dto/v1/poke-detail/IReqPokeDetail';
 import PokeDetailFrame from '#frames/PokeDetailFrame';
+import RestError from '#modules/http/RestError';
 import httpStatusCodes from 'http-status-codes';
 import { isError } from 'my-easy-fp';
-import RestError from 'src/modules/http/RestError';
 
 export default async function readPokeDetailByName(name: IReqPokeDetailParams['name']) {
   try {

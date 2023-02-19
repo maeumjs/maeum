@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import IPolyglot from '#modules/http/IPolyglot';
+import IRestError from '#modules/http/IRestError';
+import getLocales from '#tools/i18n/getLocales';
 import ErrorStackParser from 'error-stack-parser';
 import httpStatusCodes from 'http-status-codes';
-import IPolyglot from 'src/modules/http/IPolyglot';
-import IRestError from 'src/modules/http/IRestError';
-import getLocales from 'src/tools/i18n/getLocales';
 
 type TRestErrorArgs<T> =
   | Error
@@ -32,7 +33,7 @@ export default class RestError<T = unknown> extends Error implements Omit<IRestE
   public readonly polyglot?: IPolyglot;
 
   /** additional information for logging */
-  public readonly logging?: Record<string, any>;
+  public readonly logging?: Record<string, unknown>;
 
   getMessage(lang?: string) {
     if (this.polyglot != null) {
@@ -40,11 +41,7 @@ export default class RestError<T = unknown> extends Error implements Omit<IRestE
       return polyglot.t(this.polyglot.id, this.polyglot.params);
     }
 
-    if (this.message != null) {
-      return this.message;
-    }
-
-    return 'unknown error';
+    return this.message;
   }
 
   public static getRefiedStack<T>(err: RestError<T>): string | undefined {
@@ -88,7 +85,7 @@ export default class RestError<T = unknown> extends Error implements Omit<IRestE
       const err = new RestError<T>({
         payload: args.payload,
         status: args.status ?? httpStatusCodes.INTERNAL_SERVER_ERROR,
-        message: args.polyglot.id ?? '',
+        message: args.polyglot.id,
         polyglot: args.polyglot,
         logging: args.logging,
       });
@@ -116,7 +113,7 @@ export default class RestError<T = unknown> extends Error implements Omit<IRestE
     logging,
   }: {
     payload?: T;
-    status: number;
+    status?: number;
     message?: string;
     polyglot?: IPolyglot;
     logging?: Record<string, string>;

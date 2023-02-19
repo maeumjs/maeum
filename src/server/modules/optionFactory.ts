@@ -43,18 +43,21 @@ export default function optionFactory() {
           },
         };
       },
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       compilersFactory: {
         buildValidator() {
           return ({ schema }: { schema: any }) => ajv.compile(schema);
         },
-        buildSerializer(externalSchemas: FJSOptions['schema'], options: FJSOptions) {
+        buildSerializer(externalSchemas: FJSOptions['schema'], options?: FJSOptions) {
           return ({ schema }: { schema: any }) => {
             const fjsoption = options ?? {};
 
             fjsoption.schema = externalSchemas;
             fjsoption.ajv = ajvOptions;
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             const stringify = fastJsonStringify(schema, fjsoption);
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return (data: unknown) => stringify(data);
           };
         },

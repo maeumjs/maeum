@@ -49,9 +49,7 @@ export async function bootstrap(): Promise<FastifyInstance> {
     server.addHook('onSend', (_req, reply, _data, done) => {
       reply.header(CE_HEADER_KEY.RESPONSE_TIME, reply.getResponseTime()).then(
         () => undefined,
-        (err) => {
-          log.trace(err);
-        },
+        (err) => log.trace(err),
       );
       done();
     });

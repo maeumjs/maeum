@@ -15,6 +15,7 @@
     "debug": "cross-env DEBUG=maeum:* ENV_APPLICATION_LOG_LEVEL=debug TS_NODE_PROJECT=tsconfig.json node -r ts-node/register --inspect-brk --nolazy src/listen.ts",
     "just": "just --config ./.configs/just.config.ts",
     "lint": "just --config ./.configs/just.config.ts lint",
+    "lint-staged": "lint-staged",
     "prettier": "just --config ./.configs/just.config.ts prettier",
     "lnb": "concurrently \"npm run build\" \"npm run lint\"",
     "route": "cross-env NODE_ENV=production fast-maker route --config ./.configs/.fastmakerrc",
@@ -65,6 +66,7 @@
     "husky": "^8.0.3",
     "jest": "^29.4.3",
     "just-task": "^1.7.0",
+    "lint-staged": "^13.1.2",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.4",
     "prettier-eslint": "^15.0.1",
@@ -118,5 +120,13 @@
     "url-naong": "^1.0.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "cross-env NODE_ENV=production eslint --cache"
+    ],
+    "*.{js,jsx,ts,tsx},*.json,.{eslintrc.cjs,prettierrc}": [
+      "cross-env NODE_ENV=production prettier --ignore-path .eslintignore --parser json --write"
+    ]
   }
 }

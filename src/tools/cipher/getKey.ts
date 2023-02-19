@@ -1,5 +1,5 @@
-import ENCRYPTION_KEY from 'src/tools/cipher/ENCRYPTION_KEY';
-import IV_LENGTH from 'src/tools/cipher/IV_LENGTH';
+import ENCRYPTION_KEY from '#tools/cipher/ENCRYPTION_KEY';
+import IV_LENGTH from '#tools/cipher/IV_LENGTH';
 
 export default function getKey(key?: string) {
   const newKey = key ?? ENCRYPTION_KEY;

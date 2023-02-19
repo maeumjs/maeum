@@ -1,14 +1,18 @@
 import config from '#configs/config';
+import logging from '#logger/bootstrap';
 import httpLogging from '#logger/httpLogging';
+import IRestError from '#modules/http/IRestError';
+import RestError from '#modules/http/RestError';
+import encrypt from '#tools/cipher/encrypt';
+import getLocales from '#tools/i18n/getLocales';
+import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import { ErrorObject } from 'ajv';
 import ErrorStackParser from 'error-stack-parser';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { first, isError } from 'my-easy-fp';
-import IRestError from 'src/modules/http/IRestError';
-import RestError from 'src/modules/http/RestError';
-import encrypt from 'src/tools/cipher/encrypt';
-import getLocales from 'src/tools/i18n/getLocales';
+
+const log = logging(__filename);
 
 export default function onHookGlobalError(
   err: Error & { validation?: ErrorObject[] },
@@ -19,7 +23,9 @@ export default function onHookGlobalError(
     const replyMessage = err.validation
       .map(
         (validationError) =>
-          `${validationError.message}\n${validationError.instancePath}\n${validationError.data}\n`,
+          `${validationError.message ?? ''}\n${validationError.instancePath}\n${escapeSafeStringify(
+            validationError.data,
+          )}\n`,
       )
       .join('--\n');
 
@@ -33,7 +39,14 @@ export default function onHookGlobalError(
     };
 
     setImmediate(() => httpLogging(req, reply, err));
-    reply.status(httpStatusCodes.BAD_REQUEST).send(body);
+
+    reply
+      .status(httpStatusCodes.BAD_REQUEST)
+      .send(body)
+      .then(
+        () => undefined,
+        (caught) => log.trace(caught),
+      );
 
     return;
   }
@@ -42,7 +55,9 @@ export default function onHookGlobalError(
     const frames = ErrorStackParser.parse(err);
     const frame = first(frames);
 
-    const position = `project://${frame.fileName}/${frame.functionName}:${frame.lineNumber}:${frame.columnNumber}`;
+    const position = `project://${frame.fileName ?? ''}/${frame.functionName ?? ''}:${
+      frame.lineNumber ?? ''
+    }:${frame.columnNumber ?? ''}`;
     const code =
       config.server.runMode !== 'production' && config.server.runMode !== 'stage'
         ? position
@@ -53,12 +68,19 @@ export default function onHookGlobalError(
     const body: IRestError = {
       code,
       message,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       payload: err.payload,
-      status: err.status ?? httpStatusCodes.INTERNAL_SERVER_ERROR,
+      status: err.status,
     };
 
     setImmediate(() => httpLogging(req, reply, err));
-    reply.status(err.status ?? httpStatusCodes.INTERNAL_SERVER_ERROR).send(body);
+    reply
+      .status(err.status)
+      .send(body)
+      .then(
+        () => undefined,
+        (caught) => log.trace(caught),
+      );
     return;
   }
 
@@ -70,5 +92,11 @@ export default function onHookGlobalError(
   };
 
   setImmediate(() => httpLogging(req, reply, err));
-  reply.status(httpStatusCodes.INTERNAL_SERVER_ERROR).send(body);
+  reply
+    .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
+    .send(body)
+    .then(
+      () => undefined,
+      (caught) => log.trace(caught),
+    );
 }

@@ -1,6 +1,6 @@
+import decrypt from '#tools/cipher/decrypt';
+import encrypt from '#tools/cipher/encrypt';
 import 'jest';
-import decrypt from 'src/tools/cipher/decrypt';
-import encrypt from 'src/tools/cipher/encrypt';
 
 test('cipher test', () => {
   const e = encrypt('Hi maeum');

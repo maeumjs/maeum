@@ -1,14 +1,14 @@
-import config, { bootstrap as configBootstrap } from '#configs/config';
+import config, { bootstrap as configBootstrap, changePort } from '#configs/config';
 import { bootstrap as schemaBootstrap } from '#configs/json-schema';
 import getRunMode from '#configs/module/getRunMode';
 import logging from '#logger/bootstrap';
 import uncaughtExceptionHandlerBootstrap from '#logger/module/uncaughtExceptionHandler';
 import { bootstrap as httpBootstrap, listen, unbootstrap as httpUnbootstrap } from '#server/server';
+import { bootstrap as i18nBootstrap } from '#tools/i18n/i18n';
 import { config as dotenvConfig } from 'dotenv';
 import httpStatusCodes from 'http-status-codes';
 import { isError } from 'my-easy-fp';
 import path from 'path';
-import { bootstrap as i18nBootstrap } from 'src/tools/i18n/i18n';
 
 const log = logging(__filename);
 
@@ -17,9 +17,11 @@ function getPort(): number {
   const parsed = parseInt(envPort, 10);
 
   if (!Number.isNaN(parsed)) {
+    changePort(parsed);
     return parsed;
   }
 
+  changePort(config.server.port);
   return config.server.port;
 }
 
@@ -41,7 +43,7 @@ export async function bootstrap() {
   await schemaBootstrap();
 
   // Stage 03
-  configBootstrap();
+  await configBootstrap();
 
   await Promise.all([i18nBootstrap()]);
 

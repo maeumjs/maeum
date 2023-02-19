@@ -2,8 +2,8 @@ import {
   IReqPokeDetailParams,
   IReqPokeDetailQuerystring,
 } from '#dto/v1/poke-detail/IReqPokeDetail';
-import readPokeDetailByName from 'src/modules/v1/readPokeDetailByName';
-import transformPokemonToWithTid from 'src/transforms/v1/transformPokemonToWithTid';
+import readPokeDetailByName from '#modules/v1/readPokeDetailByName';
+import transformPokemonToWithTid from '#transforms/v1/transformPokemonToWithTid';
 
 import { FastifyRequest, RouteShorthandOptions } from 'fastify';
 

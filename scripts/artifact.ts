@@ -4,8 +4,10 @@ import chalk from 'chalk';
 import dayjs from 'dayjs';
 import figlet from 'figlet';
 import { createWriteStream, readFileSync, writeFileSync } from 'fs';
+import { isError, typedkey } from 'my-easy-fp';
 import os from 'os';
 import path from 'path';
+import { NormalizedPackageJson } from 'read-pkg';
 import shelljs from 'shelljs';
 import * as uuid from 'uuid';
 
@@ -17,7 +19,7 @@ function log(color: chalk.ChalkFunction, ...args: string[]) {
 const artifactName = 'maeum-artifact';
 const includeNodeModules = process.env.ENV_INCLUDE_NODE_MODULES === 'on';
 
-(async () => {
+const handler = async () => {
   const distPath = 'dist';
   const artifactPath = 'artifact';
   const sourceFilePath = path.resolve(path.join(__dirname, '..'));
@@ -36,17 +38,21 @@ const includeNodeModules = process.env.ENV_INCLUDE_NODE_MODULES === 'on';
   );
   const parsedPackageJSON = JSON.parse(
     readFileSync(path.join(sourceFilePath, 'package.json')).toString(),
-  );
+  ) as NormalizedPackageJson;
 
   const artifactID = `${parsedPackageJSON.version.replace(/\./g, '_')}-${dayjs().format(
     'YYMMDDHHmm',
   )}-${uuid.v4().replace(/-/g, '').substring(0, 8)}`;
 
-  Object.keys(parsedPackageJSON.dependencies).forEach((key) => {
-    parsedPackageJSON.dependencies[key] = parsedPackageJSON.dependencies[key]
-      .replace('~', '')
-      .replace('^', '');
-  });
+  if (parsedPackageJSON.dependencies != null) {
+    typedkey(parsedPackageJSON.dependencies).forEach((key) => {
+      if (parsedPackageJSON.dependencies?.[key] != null) {
+        parsedPackageJSON.dependencies[key] = parsedPackageJSON.dependencies[key]
+          .replace('~', '')
+          .replace('^', '');
+      }
+    });
+  }
 
   writeFileSync(
     path.join(sourceFilePath, artifactPath, 'package.json'),
@@ -129,4 +135,11 @@ const includeNodeModules = process.env.ENV_INCLUDE_NODE_MODULES === 'on';
       path.join(artifactPath, 'node_modules'),
     );
   }
-})();
+};
+
+handler().catch((caught) => {
+  const err = isError(caught, new Error('unknown error raised'));
+
+  console.log(err.message);
+  console.log(err.stack);
+});

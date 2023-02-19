@@ -1,5 +1,5 @@
+import ENCRYPTION_KEY from '#tools/cipher/ENCRYPTION_KEY';
 import * as crypto from 'crypto';
-import ENCRYPTION_KEY from 'src/tools/cipher/ENCRYPTION_KEY';
 
 export default function decrypt(text: string) {
   const textParts = text.split(':');

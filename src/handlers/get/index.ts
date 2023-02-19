@@ -1,5 +1,5 @@
+import healthHandler from '#handlers/get/health';
 import { FastifyRequest, RouteShorthandOptions } from 'fastify';
-import healthHandler from 'src/handlers/get/health';
 
 export const option: RouteShorthandOptions = {
   schema: {

@@ -10,15 +10,9 @@ export default function readJsonSchemaFile(): Record<string, ISchemaDatabaseItem
   const dirname = path.join(__dirname, '..', 'files');
   const filename = 'store.json';
   const jsonSchemaBuf = fs.readFileSync(path.join(dirname, filename));
-  const parsed = parse(jsonSchemaBuf.toString());
+  const parsed = parse(jsonSchemaBuf.toString()) as Record<string, ISchemaDatabaseItem>;
 
   log.trace('filename: ', filename);
-
-  const keyRefs = Object.keys(parsed);
-
-  keyRefs.forEach((keyRef) => {
-    parsed[keyRef].rawSchema = JSON.stringify(parsed[keyRef].schema);
-  });
 
   return parsed;
 }

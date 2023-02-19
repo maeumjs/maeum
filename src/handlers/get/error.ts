@@ -1,9 +1,9 @@
 import config from '#configs/config';
 import IReplyHealthDto from '#dto/common/IReplyHealthDto';
+import RestError from '#modules/http/RestError';
+import { fallbackLng } from '#tools/i18n/i18nConfig';
 import acceptLanguage from 'accept-language';
 import { FastifyRequest, RouteShorthandOptions } from 'fastify';
-import RestError from 'src/modules/http/RestError';
-import { fallbackLng } from 'src/tools/i18n/i18nConfig';
 
 export const option: RouteShorthandOptions = {
   schema: {

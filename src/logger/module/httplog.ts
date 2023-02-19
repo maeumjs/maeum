@@ -1,7 +1,10 @@
 import getRequestDuration from '#logger/module/getRequestDuration';
+import payloadlog from '#logger/module/payloadlog';
+import { CE_HEADER_KEY } from '#server/modules/CE_HEADER_KEY';
+import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import { snakeCase } from 'change-case';
+import fastSafeStringify from 'fast-safe-stringify';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { isFalse } from 'my-easy-fp';
 import * as uuid from 'uuid';
 
 export default function httplog(
@@ -9,85 +12,52 @@ export default function httplog(
   _reply: FastifyReply,
 ): {
   duration: number;
-  headers: { [key: string]: string };
-  queries: { [key: string]: string };
-  params: { [key: string]: string };
-  body: { [key: string]: string };
+  headers: Record<string, string>;
+  queries: Record<string, string>;
+  params: Record<string, string>;
+  body: Record<string, string>;
 } {
   try {
-    const duration = getRequestDuration('X-Response-Time');
-    const headers: { [key: string]: string } = (() => {
-      const headerRecord = req.headers ?? {};
-      return Object.keys(headerRecord).reduce<{ [key: string]: string }>((obj, key) => {
-        return {
-          ...obj,
-          [`hp_${snakeCase(key)}`]:
-            headerRecord[key]?.toString() ??
-            `header-key-value-is-undefined-${uuid.v4().replace(/-/g, '')}`,
-        };
-      }, {});
-    })();
+    const duration = getRequestDuration(req.headers[CE_HEADER_KEY.RESPONSE_TIME]);
+    const headers: Record<string, string> = Object.entries(req.headers).reduce<
+      Record<string, string>
+    >((obj, [key, value]) => {
+      return {
+        ...obj,
+        [`hp_${snakeCase(key)}`]:
+          value != null ? escapeSafeStringify(value) : `value-empty-${uuid.v4().replace(/-/g, '')}`,
+      };
+    }, {});
 
-    const queries: { [key: string]: string } = (() => {
-      const queryRecord: Record<string, string> = (req.query as Record<string, string>) ?? {};
-      return Object.keys(queryRecord).reduce<{ [key: string]: string }>((obj, key) => {
+    const queries: Record<string, string> = (() => {
+      return Object.entries(req.query as Record<string, string | undefined>).reduce<
+        Record<string, string>
+      >((obj, [key, value]) => {
         return {
           ...obj,
           [`qp_${snakeCase(key)}`]:
-            queryRecord[key]?.toString() ??
-            `query-key-value-is-undefined-${uuid.v4().replace(/-/g, '')}`,
+            value != null
+              ? escapeSafeStringify(value, fastSafeStringify)
+              : `value-empty-${uuid.v4().replace(/-/g, '')}`,
         };
       }, {});
     })();
 
-    const params: { [key: string]: string } = (() => {
-      const paramRecord: Record<string, string> = (req.params as Record<string, string>) ?? {};
-      return Object.keys(paramRecord).reduce<{ [key: string]: string }>((obj, key) => {
+    const params: Record<string, string> = (() => {
+      return Object.entries(req.params as Record<string, string | undefined>).reduce<
+        Record<string, string>
+      >((obj, [key, value]) => {
         return {
           ...obj,
           [`pp_${snakeCase(key)}`]:
-            paramRecord[key]?.toString() ??
-            `params-key-value-is-undefined-${uuid.v4().replace(/-/g, '')}`,
+            value != null
+              ? escapeSafeStringify(value, fastSafeStringify)
+              : `value-empty-${uuid.v4().replace(/-/g, '')}`,
         };
       }, {});
     })();
 
-    const body: { [key: string]: string } = (() => {
-      const bodyRecord = (req.body as any) ?? {}; // eslint-disable-line
-      if (typeof req.body === 'object' && isFalse(Array.isArray(req.body))) {
-        return Object.keys(bodyRecord).reduce<{ [key: string]: string }>((obj, key) => {
-          return {
-            ...obj,
-            [`bp_${snakeCase(key)}`]:
-              bodyRecord[key].toString() ??
-              `params-key-value-is-undefined-${uuid.v4().replace(/-/g, '')}`,
-          };
-        }, {});
-      }
-
-      if (typeof req.body === 'object' && Array.isArray(req.body)) {
-        const obj = { bp_array: req.body.join(', ') };
-        return obj;
-      }
-
-      if (
-        typeof req.body === 'string' ||
-        typeof req.body === 'number' ||
-        typeof req.body === 'boolean' ||
-        typeof req.body === 'symbol' ||
-        typeof req.body === 'bigint'
-      ) {
-        const obj: { [key: string]: any } = {}; // eslint-disable-line
-        obj[`bp_${typeof req.body}`] = req.body.toString();
-        return obj;
-      }
-
-      const unknownObj = {
-        bp_unknown_type: `${req.body}`,
-      };
-
-      return unknownObj;
-    })();
+    const body: Record<string, string> = payloadlog(req.body, 'bp');
 
     return {
       duration,

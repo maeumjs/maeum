@@ -1,14 +1,47 @@
+import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import { snakeCase } from 'change-case';
-import { typedkey } from 'my-easy-fp';
-import safeStringify from 'src/tools/misc/safeStringify';
+import fastSafeStringify from 'fast-safe-stringify';
 
-export default function payloadlog(payload: Record<string, any>): Record<string, string> {
+export default function payloadlog(payload: unknown, prefix: string): Record<string, string> {
   try {
-    return typedkey(payload)
-      .map((key) => ({ key, value: payload[key] }))
-      .reduce((aggregation, entry) => {
-        return { ...aggregation, [`rppl_${snakeCase(entry.key)}`]: safeStringify(entry.value) };
+    if (payload == null) {
+      return {};
+    }
+
+    if (typeof payload === 'object' && !Array.isArray(payload)) {
+      return Object.entries(payload).reduce((aggregation, [key, value]) => {
+        return {
+          ...aggregation,
+          [`${prefix}_${snakeCase(key)}`]:
+            value != null ? escapeSafeStringify(value, fastSafeStringify) : 'value-empty',
+        };
       }, {});
+    }
+
+    if (typeof payload === 'object' && Array.isArray(payload)) {
+      const obj = {
+        [`${prefix}_array`]: payload
+          .map((element) => escapeSafeStringify(element, fastSafeStringify))
+          .join(', '),
+      };
+      return obj;
+    }
+
+    if (
+      typeof payload === 'string' ||
+      typeof payload === 'number' ||
+      typeof payload === 'boolean' ||
+      typeof payload === 'symbol' ||
+      typeof payload === 'bigint'
+    ) {
+      return { [`${prefix}_${typeof payload}`]: payload.toString() };
+    }
+
+    const unknownObj = {
+      [`${prefix}_unknown_type`]: escapeSafeStringify(payload, fastSafeStringify),
+    };
+
+    return unknownObj;
   } catch (err) {
     return {};
   }

@@ -1,7 +1,7 @@
 import { ILogFormat } from '#logger/interface/ILogFormat';
 
 export default function getHttpMethod(method?: string): ILogFormat['req_method'] {
-  if (method === undefined || method === null) {
+  if (method == null) {
     return 'HTTPUNKNOWN';
   }
 

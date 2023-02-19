@@ -1,8 +1,8 @@
 import config from '#configs/config';
 import IReplyHealthDto from '#dto/common/IReplyHealthDto';
+import { fallbackLng } from '#tools/i18n/i18nConfig';
 import acceptLanguage from 'accept-language';
 import { FastifyRequest, RouteShorthandOptions } from 'fastify';
-import { fallbackLng } from 'src/tools/i18n/i18nConfig';
 
 export const option: RouteShorthandOptions = {
   schema: {

@@ -4,10 +4,6 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": [
-    ".eslintrc.js",
-    "tsconfig.json",
-    "tsconfig.eslint.json",
-    "tsconfig.prod.json"
-  ]
+  "include": ["src/**/*.ts", "scripts/**/*.ts", ".eslintrc.js", "resources/**/*.json"],
+  "exclude": ["tsconfig.json", "tsconfig.eslint.json", "tsconfig.prod.json", "jest.config.js"]
 }

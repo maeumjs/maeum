@@ -1,5 +1,6 @@
 import logging from '#logger/bootstrap';
 import { fallbackLng } from '#tools/i18n/i18nConfig';
+import getCwd from '#tools/misc/getCwd';
 import acceptLanguage from 'accept-language';
 import fs from 'fs';
 import { parse } from 'jsonc-parser';
@@ -37,7 +38,7 @@ export function getFallbackLanguage() {
 }
 
 export async function bootstrap() {
-  const localeDirPath = path.join(__dirname, '..', '..', '..', 'resources', 'locales');
+  const localeDirPath = path.join(getCwd(process.env), 'resources', 'locales');
 
   const supportLocales = await fs.promises.readdir(localeDirPath);
 

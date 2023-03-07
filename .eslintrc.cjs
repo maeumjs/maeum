@@ -90,7 +90,7 @@ module.exports = {
       },
     },
     {
-      files: ['src/tools/i18n/i18n.ts'],
+      files: ['src/configs/config.ts', 'src/tools/i18n/i18n.ts'],
       rules: {
         '@typescript-eslint/no-unsafe-assignment': ['off'],
       },

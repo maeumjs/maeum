@@ -1,5 +1,5 @@
 import { bootstrap as configBootstrap } from '#configs/config';
-import getRunMode from '#configs/module/getRunMode';
+import getRunMode from '#configs/modules/getRunMode';
 import { config as dotenvConfig } from 'dotenv';
 import { isError } from 'my-easy-fp';
 import path from 'path';

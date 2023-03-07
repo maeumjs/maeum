@@ -3,6 +3,8 @@
     "title": "extrame maeum fastify-boilerplate :)",
     "health": "health API: %{user_ip_address}",
     "bad_request": "Bad Request",
+    "bad_request___schema_validation": "Bad Request",
+    "internal_server_error___unknown_error": "Error raised from server, Please retry after few moment",
     "error": "Error raised from server, Please retry after few moment"
   }
 }

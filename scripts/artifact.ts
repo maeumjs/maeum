@@ -65,28 +65,22 @@ const handler = async () => {
 
   shelljs.cp(
     '-r',
-    path.join(sourceFilePath, '.config'),
-    path.join(sourceFilePath, artifactPath, '.config'),
-  );
-
-  shelljs.cp(
-    '-r',
     path.join(sourceFilePath, 'resources'),
     path.join(sourceFilePath, artifactPath, 'resources'),
   );
 
-  shelljs.mkdir('-p', path.join(sourceFilePath, artifactPath, 'src', 'config'));
+  shelljs.mkdir('-p', path.join(sourceFilePath, artifactPath, 'src', 'configs'));
   shelljs.cp(
     '-r',
-    path.join(sourceFilePath, 'src', 'config', 'files'),
-    path.join(sourceFilePath, artifactPath, 'src', 'config'),
+    path.join(sourceFilePath, 'src', 'configs', 'files'),
+    path.join(sourceFilePath, artifactPath, 'src', 'configs'),
   );
 
   shelljs.mkdir('-p', path.join(sourceFilePath, artifactPath, 'dist'));
   shelljs.cp(
     '-r',
-    path.join(sourceFilePath, 'src', 'config', 'files'),
-    path.join(sourceFilePath, artifactPath, 'src', 'config'),
+    path.join(sourceFilePath, 'src', 'configs', 'files'),
+    path.join(sourceFilePath, artifactPath, 'src', 'configs'),
   );
 
   log(chalk.yellow, chalk.yellow(`compress: ${artifactName}-${artifactID}.zip`));

@@ -1,6 +1,3 @@
-export default interface IRestError {
-  code: string;
-  message: string;
-  payload?: any;
-  status: number;
-}
+import type { IMaeumRestError } from '@maeum/error-handler';
+
+export default interface IRestError extends IMaeumRestError {}

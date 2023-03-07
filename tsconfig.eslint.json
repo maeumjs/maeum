@@ -4,6 +4,12 @@
     "allowJs": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", ".eslintrc.cjs", "resources/**/*.json"],
+  "include": [
+    "src/**/*.ts",
+    "scripts/**/*.cjs",
+    "scripts/**/*.ts",
+    ".eslintrc.cjs",
+    "resources/**/*.json"
+  ],
   "exclude": ["tsconfig.json", "tsconfig.eslint.json", "tsconfig.prod.json", "jest.config.js"]
 }

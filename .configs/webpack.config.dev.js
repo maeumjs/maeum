@@ -65,24 +65,6 @@ const config = {
     ],
   },
 
-  plugins: [
-    new CopyPlugin({
-      patterns: [
-        {
-          from: path.join(sourcePath, 'src', 'config', 'files'),
-          to: path.join(distPath, 'src', 'config', 'files'),
-        },
-        { from: path.join(sourcePath, 'resources'), to: path.join(distPath, 'resources') },
-        { from: path.join(sourcePath, '.configs'), to: path.join(distPath, '.configs') },
-        { from: path.join(sourcePath, 'package.json'), to: path.join(distPath, 'package.json') },
-        {
-          from: path.join(sourcePath, 'package-lock.json'),
-          to: path.join(distPath, 'package-lock.json'),
-        },
-      ],
-    }),
-  ],
-
   node: {
     __dirname: true,
   },

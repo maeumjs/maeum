@@ -1,7 +1,7 @@
 import config from '#configs/config';
 import IReplyHealthDto from '#dto/common/IReplyHealthDto';
-import RestError from '#modules/http/RestError';
 import { fallbackLng } from '#tools/i18n/i18nConfig';
+import { RestError } from '@maeum/error-handler';
 import acceptLanguage from 'accept-language';
 import { FastifyRequest, RouteShorthandOptions } from 'fastify';
 
@@ -31,7 +31,7 @@ export default async function errorHandler(req: FastifyRequest<{ Querystring: { 
   if (req.query.ee == null) {
     throw RestError.create({
       polyglot: { id: 'common.main.error' },
-      payload: { description: 'this is a test payload' },
+      data: { description: 'this is a test payload' },
     });
   }
 

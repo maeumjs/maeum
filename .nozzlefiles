@@ -1,4 +1,3 @@
 src/dto/**/*.ts
 src/configs/interfaces/IConfiguration.ts
-src/modules/http/IRestInfo.ts
 src/modules/http/IRestError.ts

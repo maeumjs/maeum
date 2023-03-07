@@ -18,6 +18,8 @@
   // schema file listing filename
   "list-file": ".nozzlefiles",
 
+  "cli-logo": true,
+
   // ts-json-schema-generator option
   "generatorOption": {
     "additionalProperties": true,

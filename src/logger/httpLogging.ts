@@ -4,8 +4,9 @@ import { ILogFormat } from '#logger/interface/ILogFormat';
 import getHttpMethod from '#logger/module/getHttpMethod';
 import httplog from '#logger/module/httplog';
 import payloadlog from '#logger/module/payloadlog';
-import RestError from '#modules/http/RestError';
+import getLocales from '#tools/i18n/getLocales';
 import escape from '#tools/misc/escape';
+import { RestError } from '@maeum/error-handler';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { createByfastify3 } from 'jin-curlize';
@@ -55,8 +56,8 @@ function getMessage(err?: Error, lang?: string): string | undefined {
     return undefined;
   }
 
-  if (err instanceof RestError) {
-    return escape(err.getMessage(lang));
+  if (err instanceof RestError && err.polyglot != null) {
+    return escape(getLocales(lang).t(err.polyglot.id, err.polyglot.params));
   }
 
   return err.message;
@@ -68,7 +69,7 @@ function getPayload(err?: Error): Record<string, string> | undefined {
   }
 
   if (err instanceof RestError) {
-    return payloadlog(err.payload, 'rppl');
+    return payloadlog(err.data, 'rppl');
   }
 
   return undefined;

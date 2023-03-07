@@ -5,7 +5,7 @@ import { CE_LOG_PROTOCOL } from '#logger/interface/CE_LOG_PROTOCOL';
 import { CE_HEADER_KEY } from '#server/modules/CE_HEADER_KEY';
 import optionFactory from '#server/modules/optionFactory';
 import loggingFlagPlugin from '#server/plugin/loggingFlagPlugin';
-import onHookGlobalError from '#server/plugin/onHookGlobalError';
+import * as errorHook from '#server/plugin/onHookGlobalError';
 import onHookResponse from '#server/plugin/onHookResponse';
 import swaggerConfig from '#server/plugin/swaggerConfig';
 import swaggerUiConfig from '#server/plugin/swaggerUiConfig';
@@ -14,6 +14,7 @@ import fastifyMultipart from '@fastify/multipart';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import fastifyUrlData from '@fastify/url-data';
+import { errorHandler } from '@maeum/error-handler';
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import httpStatusCodes from 'http-status-codes';
@@ -40,7 +41,15 @@ export async function bootstrap(): Promise<FastifyInstance> {
     await server.register(fastifySwaggerUI, swaggerUiConfig());
   }
 
-  server.setErrorHandler(onHookGlobalError);
+  server.setErrorHandler(
+    errorHandler(
+      [],
+      'common.main.',
+      errorHook.localeHandler,
+      errorHook.hookHandler,
+      errorHook.encryptor,
+    ),
+  );
   server.addHook('onResponse', onHookResponse);
 
   // Replace responseTime plugin

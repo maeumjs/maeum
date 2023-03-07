@@ -2,5 +2,7 @@
 {
   "project": "tsconfig.json",
   "handler": "src/handlers",
-  "output": "src/handlers"
+  "output": "src/handlers",
+  "route-map": true,
+  "cli-logo": true
 }

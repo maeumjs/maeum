@@ -45,7 +45,6 @@
       }
     },
     "schema": {
-      "$id": "IConfiguration",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -53,14 +52,19 @@
           "$ref": "IServer"
         },
         "endpoint": {
-          "$ref": "IEndpoint"
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Connected RESTful server endpoint"
         }
       },
       "required": [
         "server",
         "endpoint"
       ],
-      "description": "서버 설정"
+      "description": "서버 설정",
+      "$id": "IConfiguration"
     }
   },
   "IEndpoint": {
@@ -103,7 +107,6 @@
       }
     },
     "schema": {
-      "$id": "IPokemonDto",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -144,7 +147,45 @@
         "order",
         "species"
       ],
-      "description": "Pokemon DTO"
+      "description": "Pokemon DTO",
+      "$id": "IPokemonDto"
+    }
+  },
+  "IPokemonError": {
+    "id": "IPokemonError",
+    "filePath": "src/dto/v1/poke-detail/IPokemonError.ts",
+    "dependency": {
+      "import": {
+        "name": "IPokemonError",
+        "from": []
+      },
+      "export": {
+        "name": "IPokemonError",
+        "to": []
+      }
+    },
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {},
+        "acode": {
+          "type": "string",
+          "description": "additional error code"
+        }
+      },
+      "required": [
+        "acode",
+        "code",
+        "message"
+      ],
+      "$id": "IPokemonError"
     }
   },
   "IPokemonSpeciesDto": {
@@ -195,7 +236,6 @@
       }
     },
     "schema": {
-      "$id": "IReplyHealthDto",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -228,7 +268,8 @@
         "runMode",
         "port",
         "i18n"
-      ]
+      ],
+      "$id": "IReplyHealthDto"
     }
   },
   "IReqPokeDetailParams": {
@@ -245,7 +286,6 @@
       }
     },
     "schema": {
-      "$id": "IReqPokeDetailParams",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -256,7 +296,8 @@
       },
       "required": [
         "name"
-      ]
+      ],
+      "$id": "IReqPokeDetailParams"
     }
   },
   "IReqPokeDetailQuerystring": {
@@ -273,7 +314,6 @@
       }
     },
     "schema": {
-      "$id": "IReqPokeDetailQuerystring",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -286,7 +326,8 @@
       },
       "required": [
         "tid"
-      ]
+      ],
+      "$id": "IReqPokeDetailQuerystring"
     }
   },
   "IRestError": {
@@ -303,7 +344,6 @@
       }
     },
     "schema": {
-      "$id": "IRestError",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -313,16 +353,13 @@
         "message": {
           "type": "string"
         },
-        "payload": {},
-        "status": {
-          "type": "number"
-        }
+        "data": {}
       },
       "required": [
         "code",
-        "message",
-        "status"
-      ]
+        "message"
+      ],
+      "$id": "IRestError"
     }
   },
   "IRestInfo": {
@@ -339,7 +376,6 @@
       }
     },
     "schema": {
-      "$id": "IRestInfo",
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",
       "properties": {
@@ -349,7 +385,8 @@
       },
       "required": [
         "status"
-      ]
+      ],
+      "$id": "IRestInfo"
     }
   },
   "IServer": {

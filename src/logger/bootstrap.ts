@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument */
-import getRunMode from '#configs/module/getRunMode';
+import getRunMode from '#configs/modules/getRunMode';
 import { ILogFormat } from '#logger/interface/ILogFormat';
 import ll from '#logger/ll';
 import chalk from 'chalk';

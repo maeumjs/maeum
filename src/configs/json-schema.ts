@@ -1,6 +1,6 @@
 import ajvbox from '#configs/ajvbox';
 import ISchemaDatabaseItem from '#configs/interfaces/ISchemaDatabaseItem';
-import readJsonSchemaFile from '#configs/module/readJsonSchemaFile';
+import readJsonSchemaFile from '#configs/modules/readJsonSchemaFile';
 import logging from '#logger/bootstrap';
 import { JSONSchema7 } from 'json-schema';
 import { isError } from 'my-easy-fp';

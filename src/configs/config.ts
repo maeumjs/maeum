@@ -1,14 +1,13 @@
 import ajvbox from '#configs/ajvbox';
 import IConfiguration from '#configs/interfaces/IConfiguration';
-import getRunMode from '#configs/module/getRunMode';
-import readConfigFile from '#configs/module/readConfigFile';
+import getRunMode from '#configs/modules/getRunMode';
+import readConfigFile from '#configs/modules/readConfigFile';
 import logging from '#logger/bootstrap';
 import { isError, isFalse } from 'my-easy-fp';
 import { ReadonlyDeep } from 'type-fest';
 
 const log = logging(__filename);
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const internalConfig: IConfiguration = {} as any;
 const config: ReadonlyDeep<IConfiguration> = internalConfig;
 

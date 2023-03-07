@@ -106,3 +106,8 @@ dist
 # artifact
 artifact/
 dist/
+
+# Auto generated files
+resources/configs/store.json
+src/handlers/route-map.ts
+src/handlers/route.ts

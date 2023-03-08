@@ -1,6 +1,6 @@
 {
   // database file directory or filename
-  "output": "src/configs/files/store.json",
+  "output": "resources/configs/store.json",
 
   // tsconfig.json file path
   "project": "tsconfig.json",

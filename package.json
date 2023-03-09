@@ -75,6 +75,7 @@
     "rimraf": "^4.3.1",
     "schema-nozzle": "^0.20.0",
     "shelljs": "^0.8.5",
+    "swagger-typescript-api": "^12.0.3",
     "ts-jest": "^29.0.3",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",

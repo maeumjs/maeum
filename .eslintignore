@@ -18,4 +18,5 @@ jest.config.js
 
 # types
 src/@types/json-schema/index.d.ts
+resources/apis/generated/**
 

@@ -2,11 +2,13 @@
   "watch": [
     "app.ts",
     "src/**/**.ts",
-    "src/**/**.yml",
-    "src/**/**.yaml"
+    "resources/configs/**/*.json",
+    "resources/configs/**/*.env",
+    "resources/locales/**/*.json",
+    "!src/dto/**/*.ts"
   ],
   "exec": "ts-node -r tsconfig-paths/register --files --project tsconfig.json src/listen.ts",
-  "ext": "js ts",
+  "ext": "ts json env",
   "ignore": [
     "*.test.ts"
   ],

@@ -1,4 +1,4 @@
-import logging from '#logger/bootstrap';
+import logging from '#loggers/bootstrap';
 import { fallbackLng } from '#tools/i18n/i18nConfig';
 import getCwd from '#tools/misc/getCwd';
 import acceptLanguage from 'accept-language';

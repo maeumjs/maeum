@@ -1,9 +1,9 @@
 import config from '#configs/config';
-import logging from '#logger/bootstrap';
-import { ILogFormat } from '#logger/interface/ILogFormat';
-import getHttpMethod from '#logger/module/getHttpMethod';
-import httplog from '#logger/module/httplog';
-import payloadlog from '#logger/module/payloadlog';
+import logging from '#loggers/bootstrap';
+import { ILogFormat } from '#loggers/interface/ILogFormat';
+import getHttpMethod from '#loggers/module/getHttpMethod';
+import httplog from '#loggers/module/httplog';
+import payloadlog from '#loggers/module/payloadlog';
 import getLocales from '#tools/i18n/getLocales';
 import escape from '#tools/misc/escape';
 import { RestError } from '@maeum/error-handler';

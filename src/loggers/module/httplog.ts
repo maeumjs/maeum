@@ -1,5 +1,5 @@
-import getRequestDuration from '#logger/module/getRequestDuration';
-import payloadlog from '#logger/module/payloadlog';
+import getRequestDuration from '#loggers/module/getRequestDuration';
+import payloadlog from '#loggers/module/payloadlog';
 import { CE_HEADER_KEY } from '#server/modules/CE_HEADER_KEY';
 import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import { snakeCase } from 'change-case';

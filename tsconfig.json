@@ -18,7 +18,7 @@
       "#server/*": ["src/server/*"],
       "#frames/*": ["src/frames/*"],
       "#handlers/*": ["src/handlers/*"],
-      "#logger/*": ["src/logger/*"],
+      "#loggers/*": ["src/loggers/*"],
       "#modules/*": ["src/modules/*"],
       "#transforms/*": ["src/transforms/*"],
       "#storages/*": ["src/storages/*"],

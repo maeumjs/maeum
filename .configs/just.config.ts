@@ -85,9 +85,9 @@ task('lint', async () => {
   const cmd = 'eslint';
   const option = '--cache .';
 
-  logger.info('ESLint: ', cmd, option);
+  logger.info('ESLint: ', cmd, option, process.argv.splice(5).join(' '));
 
-  await execa(cmd, splitArgs(option), {
+  await execa(cmd, splitArgs(option).concat(process.argv.slice(5)), {
     env: {
       NODE_ENV: 'production',
     },

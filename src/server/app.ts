@@ -1,5 +1,5 @@
 import getPort from '#configs/modules/getPort';
-import logging from '#logger/bootstrap';
+import logging from '#loggers/bootstrap';
 import envBootstrap from '#server/plugin/environments';
 import { bootstrap as httpBootstrap, listen, unbootstrap as httpUnbootstrap } from '#server/server';
 import { bootstrap as i18nBootstrap } from '#tools/i18n/i18n';

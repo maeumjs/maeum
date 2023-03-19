@@ -1,6 +1,6 @@
 import config from '#configs/config';
 import { CE_RUN_MODE } from '#configs/interfaces/CE_RUN_MODE';
-import httpLogging from '#logger/httpLogging';
+import httpLogging from '#loggers/httpLogging';
 import encrypt from '#tools/cipher/encrypt';
 import getLocales from '#tools/i18n/getLocales';
 import { errorHandler } from '@maeum/error-handler';

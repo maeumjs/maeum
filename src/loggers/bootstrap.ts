@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-argument */
 import getRunMode from '#configs/modules/getRunMode';
-import { ILogFormat } from '#logger/interface/ILogFormat';
-import ll from '#logger/ll';
+import { ILogFormat } from '#loggers/interface/ILogFormat';
+import ll from '#loggers/ll';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
 import fs from 'fs';

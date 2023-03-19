@@ -1,7 +1,7 @@
 import ajvbox from '#configs/ajvbox';
 import ISchemaDatabaseItem from '#configs/interfaces/ISchemaDatabaseItem';
 import readJsonSchemaFile from '#configs/modules/readJsonSchemaFile';
-import logging from '#logger/bootstrap';
+import logging from '#loggers/bootstrap';
 import { JSONSchema7 } from 'json-schema';
 import { isError } from 'my-easy-fp';
 import { ReadonlyDeep } from 'type-fest';

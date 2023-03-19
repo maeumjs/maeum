@@ -2,7 +2,7 @@ import ajvbox from '#configs/ajvbox';
 import IConfiguration from '#configs/interfaces/IConfiguration';
 import getRunMode from '#configs/modules/getRunMode';
 import readConfigFile from '#configs/modules/readConfigFile';
-import logging from '#logger/bootstrap';
+import logging from '#loggers/bootstrap';
 import { isError, isFalse } from 'my-easy-fp';
 import { ReadonlyDeep } from 'type-fest';
 

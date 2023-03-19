@@ -6,8 +6,8 @@ module.exports = {
   ignorePatterns: ['__test__/*', '__tests__/*'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: 'tsconfig.eslint.json',
-    sourceType: 'module',
+    project: ['tsconfig.eslint.json'],
+    tsconfigRootDir: __dirname,
   },
   extends: [
     'plugin:@typescript-eslint/eslint-recommended',

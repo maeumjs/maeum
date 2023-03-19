@@ -1,7 +1,7 @@
 import { bootstrap as configBootstrap } from '#configs/config';
 import { bootstrap as schemaBootstrap } from '#configs/json-schema';
 import getRunMode from '#configs/modules/getRunMode';
-import uncaughtExceptionHandlerBootstrap from '#logger/module/uncaughtExceptionHandler';
+import uncaughtExceptionHandlerBootstrap from '#loggers/module/uncaughtExceptionHandler';
 import getCwd from '#tools/misc/getCwd';
 import { config as dotenvConfig } from 'dotenv';
 import path from 'path';

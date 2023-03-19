@@ -1,4 +1,4 @@
-import logging from '#logger/bootstrap';
+import logging from '#loggers/bootstrap';
 import { bootstrap, unbootstrap } from '#server/app';
 import { FastifyInstance } from 'fastify';
 import 'jest';

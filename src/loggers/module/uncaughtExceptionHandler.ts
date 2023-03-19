@@ -1,4 +1,4 @@
-import logging from '#logger/bootstrap';
+import logging from '#loggers/bootstrap';
 import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import httpStatusCodes from 'http-status-codes';
 

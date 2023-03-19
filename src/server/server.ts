@@ -1,7 +1,7 @@
 import config from '#configs/config';
 import route from '#handlers/route';
-import logging from '#logger/bootstrap';
-import { CE_LOG_PROTOCOL } from '#logger/interface/CE_LOG_PROTOCOL';
+import logging from '#loggers/bootstrap';
+import { CE_LOG_PROTOCOL } from '#loggers/interface/CE_LOG_PROTOCOL';
 import { CE_HEADER_KEY } from '#server/modules/CE_HEADER_KEY';
 import optionFactory from '#server/modules/optionFactory';
 import loggingFlagPlugin from '#server/plugin/loggingFlagPlugin';

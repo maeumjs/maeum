@@ -1,5 +1,5 @@
 import type ISchemaDatabaseItem from '#configs/interfaces/ISchemaDatabaseItem';
-import logging from '#logger/bootstrap';
+import logging from '#loggers/bootstrap';
 import getCwd from '#tools/misc/getCwd';
 import fs from 'fs';
 import { parse } from 'jsonc-parser';

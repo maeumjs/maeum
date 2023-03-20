@@ -1,15 +1,13 @@
-/* eslint-disable camelcase */
-
 module.exports = {
   apps: [
     {
       name: 'maeum-boilerplate',
-      script: 'dist/maeum.js',
+      script: 'dist/listen.js',
       instances: 0,
       watch: false,
       max_memory_restart: '2G',
       autorestart: true,
-      node_args: '--enable-source-maps',
+      node_args: '--enable-source-maps -r ./dist/loader',
       exp_backoff_restart_delay: 200,
       wait_ready: true,
       kill_timeout: 6000,

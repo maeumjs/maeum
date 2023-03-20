@@ -7,9 +7,9 @@ const pkg = readPkg.sync();
 
 export default [
   {
-    input: 'src/listen.ts',
+    input: ['src/listen.ts', 'src/configs/loader.ts'],
     output: {
-      file: 'dist/maeum.cjs',
+      dir: 'dist',
       format: 'cjs',
       sourcemap: true,
     },

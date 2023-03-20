@@ -1,4 +1,3 @@
-/* eslint-disable no-console, import/no-extraneous-dependencies */
 import archiver from 'archiver';
 import chalk from 'chalk';
 import dayjs from 'dayjs';
@@ -69,19 +68,13 @@ const handler = async () => {
     path.join(sourceFilePath, artifactPath, 'resources'),
   );
 
-  shelljs.mkdir('-p', path.join(sourceFilePath, artifactPath, 'src', 'configs'));
   shelljs.cp(
     '-r',
-    path.join(sourceFilePath, 'src', 'configs', 'files'),
-    path.join(sourceFilePath, artifactPath, 'src', 'configs'),
+    path.join(sourceFilePath, '.configs'),
+    path.join(sourceFilePath, artifactPath, '.configs'),
   );
 
   shelljs.mkdir('-p', path.join(sourceFilePath, artifactPath, 'dist'));
-  shelljs.cp(
-    '-r',
-    path.join(sourceFilePath, 'src', 'configs', 'files'),
-    path.join(sourceFilePath, artifactPath, 'src', 'configs'),
-  );
 
   log(chalk.yellow, chalk.yellow(`compress: ${artifactName}-${artifactID}.zip`));
   const artifactFilename = `${artifactName}-${artifactID}.zip`;
@@ -89,7 +82,7 @@ const handler = async () => {
   const compressor = archiver('zip', { zlib: { level: 9 } });
 
   if (includeNodeModules) {
-    console.log(
+    log(
       chalk.yellow,
       chalk.yellow(
         `include node_modules directory on compressed artifact file: ${artifactFilename}`,

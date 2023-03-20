@@ -22,7 +22,7 @@ export function changePort(port: number) {
   }
 }
 
-export async function bootstrap() {
+export function bootstrap() {
   try {
     const runMode = getRunMode();
     const readedConfig: IConfiguration = readConfigFile(runMode);

@@ -1,7 +1,6 @@
 import { bootstrap as configBootstrap } from '#configs/config';
 import getRunMode from '#configs/modules/getRunMode';
 import { config as dotenvConfig } from 'dotenv';
-import { isError } from 'my-easy-fp';
 import path from 'path';
 
 dotenvConfig({
@@ -14,9 +13,4 @@ dotenvConfig({
   ),
 });
 
-configBootstrap().catch((caught) => {
-  const err = isError(caught, new Error('unknown error raised'));
-
-  console.log(err.message);
-  console.log(err.stack);
-});
+configBootstrap();

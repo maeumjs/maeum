@@ -1,3 +1,4 @@
+import loader from '#configs/loader';
 import logging from '#loggers/bootstrap';
 import { bootstrap, unbootstrap } from '#server/app';
 import { FastifyInstance } from 'fastify';
@@ -9,6 +10,7 @@ const share: { app: FastifyInstance } = {} as any;
 const log = logging(__filename);
 
 beforeAll(async () => {
+  loader();
   share.app = await bootstrap();
   await share.app.ready();
   share.app.swagger();

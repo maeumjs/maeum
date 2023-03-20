@@ -1,12 +1,9 @@
-import ENCRYPTION_KEY from '#tools/cipher/ENCRYPTION_KEY';
-import IV_LENGTH from '#tools/cipher/IV_LENGTH';
+import { CE_ENCRYPTION_DEFAULT } from '#tools/cipher/CE_ENCRYPTION_DEFAULT';
 
 export default function getKey(key?: string) {
-  const newKey = key ?? ENCRYPTION_KEY;
-
-  if (newKey.length > 32 && newKey.length % IV_LENGTH === 0) {
-    return newKey;
+  if (key != null && key.length % CE_ENCRYPTION_DEFAULT.KEY_LENGTH === 0) {
+    return Buffer.from(key);
   }
 
-  return ENCRYPTION_KEY;
+  return CE_ENCRYPTION_DEFAULT.ENCRYPTION_KEY;
 }

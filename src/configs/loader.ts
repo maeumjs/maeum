@@ -1,14 +1,17 @@
 import { bootstrap as configBootstrap } from '#configs/config';
 import { bootstrap as schemaBootstrap } from '#configs/json-schema';
 import getRunMode from '#configs/modules/getRunMode';
-import uncaughtExceptionHandlerBootstrap from '#loggers/module/uncaughtExceptionHandler';
+import { bootstrap as i18nBootstrap } from '#tools/i18n/i18n';
 import getCwd from '#tools/misc/getCwd';
 import { config as dotenvConfig } from 'dotenv';
 import path from 'path';
 
-// environments
-export default async function bootstrap() {
-  uncaughtExceptionHandlerBootstrap();
+let loaded = false;
+
+export default function loader() {
+  if (loaded) {
+    return;
+  }
 
   // Stage 02
   dotenvConfig({
@@ -21,8 +24,16 @@ export default async function bootstrap() {
   });
 
   // Stage 02
-  await schemaBootstrap();
+  schemaBootstrap();
 
   // Stage 03
-  await configBootstrap();
+  configBootstrap();
+
+  i18nBootstrap();
+
+  loaded = true;
+}
+
+if (process.env.RUN_ON_TESTCASE !== 'true') {
+  loader();
 }

@@ -14,7 +14,7 @@ const jsonSchema: ReadonlyDeep<Record<string, ISchemaDatabaseItem>> = internalJs
 const internalPlainJsonSchema: Record<string, JSONSchema7> = {};
 export const plainJsonSchema: ReadonlyDeep<Record<string, JSONSchema7>> = internalPlainJsonSchema;
 
-export async function bootstrap() {
+export function bootstrap() {
   try {
     const readedSchemas: Record<string, ISchemaDatabaseItem> = readJsonSchemaFile();
 

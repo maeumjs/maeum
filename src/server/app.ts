@@ -1,17 +1,16 @@
 import getPort from '#configs/modules/getPort';
 import logging from '#loggers/bootstrap';
-import envBootstrap from '#server/plugin/environments';
+import uncaughtExceptionHandlerBootstrap from '#loggers/module/uncaughtExceptionHandler';
 import { bootstrap as httpBootstrap, listen, unbootstrap as httpUnbootstrap } from '#server/server';
-import { bootstrap as i18nBootstrap } from '#tools/i18n/i18n';
 import httpStatusCodes from 'http-status-codes';
 import { isError } from 'my-easy-fp';
 
 const log = logging(__filename);
 
 export async function bootstrap() {
-  await envBootstrap();
+  uncaughtExceptionHandlerBootstrap();
 
-  await Promise.all([i18nBootstrap()]);
+  // await Promise.all([]);
 
   const fastify = await httpBootstrap();
   return fastify;

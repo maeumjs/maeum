@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import execa from 'execa';
 import { argv, logger, series, task } from 'just-task';
 import path from 'path';
@@ -51,9 +50,12 @@ task('tsc-watch', async () => {
   });
 });
 
-task('+pack:dev', async () => {
-  const cmd = `webpack`;
-  const option = `--config ${path.join('.configs', 'webpack.config.dev.js')}`;
+task('+rollup:dev', async () => {
+  const cmd = `rollup`;
+  const option = `--config ${path.join(
+    '.configs',
+    'rollup.config.dev.ts',
+  )} --configPlugin typescript`;
 
   logger.info('Build: ', cmd, option);
 
@@ -66,9 +68,12 @@ task('+pack:dev', async () => {
   });
 });
 
-task('+pack:prod', async () => {
-  const cmd = `webpack`;
-  const option = `--config ${path.posix.join('.configs', 'webpack.config.prod.js')}`;
+task('+rollup:prod', async () => {
+  const cmd = `rollup`;
+  const option = `--config ${path.join(
+    '.configs',
+    'rollup.config.prod.ts',
+  )} --configPlugin typescript`;
 
   logger.info('Build: ', cmd, option);
 
@@ -224,7 +229,7 @@ task('debug', async () => {
   });
 });
 
-task('pack:dev', series('clean', 'lint', '+pack:dev'));
-task('pack', series('clean', '+pack:prod'));
-task('artifact', series('clean', 'lint', '+pack:prod', '+artifact'));
-task('thin-artifact', series('clean', 'lint', '+pack:prod', '+thin-artifact'));
+task('pack:dev', series('clean', 'lint', '+rollup:dev'));
+task('pack', series('clean', '+rollup:prod'));
+task('artifact', series('pack', '+artifact'));
+task('thin-artifact', series('pack', '+thin-artifact'));

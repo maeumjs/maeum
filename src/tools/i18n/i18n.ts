@@ -13,60 +13,52 @@ const log = logging(__filename);
 const internalLocales: Record<string, Polyglot | undefined> = {};
 const locales: ReadonlyDeep<Record<string, Polyglot | undefined>> = internalLocales;
 
-async function getLocaleResources(localeDirPath: string, locale: string) {
-  const namespaces = await fs.promises.readdir(path.join(localeDirPath, locale));
+function getLocaleResources(localeDirPath: string, locale: string) {
+  const namespaces = fs.readdirSync(path.join(localeDirPath, locale));
+  const resourceMap: Record<string, any> = {};
 
-  const localeResource = (
-    await Promise.all(
-      namespaces.map(async (namespace) => {
-        return {
-          [path.basename(namespace, path.extname(namespace))]: parse(
-            (await fs.promises.readFile(path.join(localeDirPath, locale, namespace))).toString(),
-          ) as Record<string, any>,
-        };
-      }),
-    )
-  ).reduce<Record<string, any>>((aggregation, namespace) => {
-    return { ...aggregation, ...namespace };
-  }, {});
+  for (const namespace of namespaces) {
+    const key = path.basename(namespace, path.extname(namespace));
+    const value = parse(
+      fs.readFileSync(path.join(localeDirPath, locale, namespace)).toString(),
+    ) as Record<string, any>;
 
-  return localeResource;
+    resourceMap[key] = { ...value, ...(resourceMap[key] ?? {}) };
+  }
+
+  return resourceMap;
 }
 
 export function getFallbackLanguage() {
   return locales[fallbackLng]!;
 }
 
-export async function bootstrap() {
+export function bootstrap() {
   const localeDirPath = path.join(getCwd(process.env), 'resources', 'locales');
 
-  const supportLocales = await fs.promises.readdir(localeDirPath);
+  const supportLocales = fs.readdirSync(localeDirPath);
 
   log.trace('locale dir path: ', localeDirPath);
   log.trace('support language: ', supportLocales);
 
   acceptLanguage.languages(supportLocales);
+  const localeMap: Record<string, any> = {};
 
-  const loadedLocales = (
-    await Promise.all(
-      supportLocales.map(async (supportLocale) => {
-        const locale = await getLocaleResources(localeDirPath, supportLocale);
-        return { [supportLocale]: locale };
-      }),
-    )
-  ).reduce<Record<string, any>>((aggregation, locale) => {
-    return { ...aggregation, ...locale };
-  }, {});
+  for (const supportLocale of supportLocales) {
+    const locale = getLocaleResources(localeDirPath, supportLocale);
+    localeMap[supportLocale] = { ...locale, ...(localeMap[supportLocale] ?? {}) };
 
-  Object.keys(loadedLocales).forEach((locale) => {
-    internalLocales[locale] = new Polyglot({ locale, phrases: loadedLocales[locale] });
-  });
+    internalLocales[supportLocale] = new Polyglot({
+      locale: supportLocale,
+      phrases: localeMap[supportLocale],
+    });
+  }
 
   if (internalLocales[fallbackLng] == null) {
     throw new Error(`Cannot found default locale: ${fallbackLng}`);
   }
 
-  return loadedLocales;
+  return localeMap;
 }
 
 export default locales;

@@ -85,6 +85,7 @@ module.exports = {
     {
       files: ['scripts/**/*.ts', 'scripts/**/*.cjs'],
       rules: {
+        'import/no-extraneous-dependencies': ['off'],
         '@typescript-eslint/no-unsafe-assignment': ['off'],
         'no-console': ['off'],
       },

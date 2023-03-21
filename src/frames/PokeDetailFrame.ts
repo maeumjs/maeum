@@ -9,8 +9,8 @@ export default class PokeDetailFrame extends JinEitherFrame<IPokemonDto> {
 
   constructor(data: JinConstructorType<PokeDetailFrame>) {
     super({
-      host: path.posix.join(config.endpoint.pokeapi, 'api/v2/pokemon/:name'),
-      method: 'get',
+      $$host: path.posix.join(config.endpoint.pokeapi, 'api/v2/pokemon/:name'),
+      $$method: 'get',
     });
 
     this.name = data.name;

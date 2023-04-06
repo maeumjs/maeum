@@ -1,4 +1,5 @@
 import config from '#configs/config';
+import routeMap from '#handlers/route-map';
 import logging from '#loggers/bootstrap';
 import { ILogFormat } from '#loggers/interface/ILogFormat';
 import getHttpMethod from '#loggers/module/getHttpMethod';
@@ -11,26 +12,24 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { createByfastify3 } from 'jin-curlize';
 import { isError } from 'my-easy-fp';
-import { pathToRegexp } from 'path-to-regexp';
 
 const log = logging(__filename);
 
-const cacheNotHit = Symbol('exclude-cache-not-hit');
-const caches: Partial<Record<string | typeof cacheNotHit, boolean>> = { [cacheNotHit]: false };
+const excludeMap = new Map<string, string>([
+  ['/health', 'get'],
+  ['/', 'get'],
+]);
 
-const excludes = ['/health', '/', '/swagger.io', '/swagger.io/:suburl*'].map((url) =>
-  pathToRegexp(url),
-);
+const curlExcludeMap = new Map<string, string>([['/v1/images', 'post']]);
 
-const cacheCurls: Record<string | typeof cacheNotHit, boolean> = { [cacheNotHit]: false };
-const excludeCurls = ['/v1/images'].map((url) => pathToRegexp(url));
-
-function create(req: FastifyRequest): string | undefined {
+function create(
+  req: FastifyRequest,
+  route?: { filePath: string; routePath: string; method: string },
+): string | undefined {
   try {
-    const urlData = req.urlData();
-
-    if (cacheCurls[urlData.path ?? cacheNotHit]) {
-      return 'n/a';
+    // exclude check
+    if (route != null && curlExcludeMap.get(route.routePath) === route.method.toLowerCase()) {
+      return undefined;
     }
 
     // recommand prettify option enable only local run-mode because newline character possible to broken log
@@ -90,19 +89,17 @@ export default function httpLogging(
     req.setRequestLogging();
 
     const urlData = req.urlData();
-    const rawUrl = urlData.path ?? cacheNotHit;
+    const route =
+      urlData.path != null ? routeMap.get(urlData.path)?.get(req.method.toLowerCase()) : undefined;
 
-    // check urlData.path in exclude urls
-    if (caches[rawUrl] == null) {
-      caches[rawUrl] = excludes.some((matcher) => matcher.test(urlData.path ?? '<>'));
-    }
-
-    if (caches[rawUrl] !== false) {
+    if (route == null) {
       return true;
     }
 
-    // check urlData.path in exclude curl command
-    cacheCurls[rawUrl] = excludeCurls.some((matcher) => matcher.test(urlData.path ?? '<>'));
+    // exclude check
+    if (excludeMap.get(route.routePath) === route.method) {
+      return true;
+    }
 
     const { duration, headers, queries, params, body } = httplog(req, reply);
     const payload = getPayload(err);
@@ -112,7 +109,7 @@ export default function httpLogging(
       req_method: getHttpMethod(req.raw.method),
       duration,
       req_url: req.raw.url ?? '/http/logging/unknown',
-      curl_cmd: create(req),
+      curl_cmd: create(req, route),
       err_msg: err != null ? getMessage(err, req.headers['accept-language']) : undefined,
       err_stk: err != null ? escape(err.stack ?? '') : undefined,
       body: {

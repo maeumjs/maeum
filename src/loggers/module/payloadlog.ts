@@ -2,6 +2,14 @@ import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import { snakeCase } from 'change-case';
 import fastSafeStringify from 'fast-safe-stringify';
 
+function replacer(_key: string, value: unknown) {
+  if (value instanceof Buffer) {
+    return '[Buffer]';
+  }
+
+  return value;
+}
+
 export default function payloadlog(payload: unknown, prefix: string): Record<string, string> {
   try {
     if (payload == null) {
@@ -13,7 +21,7 @@ export default function payloadlog(payload: unknown, prefix: string): Record<str
         return {
           ...aggregation,
           [`${prefix}_${snakeCase(key)}`]:
-            value != null ? escapeSafeStringify(value, fastSafeStringify) : 'value-empty',
+            value != null ? escapeSafeStringify(value, fastSafeStringify, replacer) : '[Empty]',
         };
       }, {});
     }
@@ -21,7 +29,9 @@ export default function payloadlog(payload: unknown, prefix: string): Record<str
     if (typeof payload === 'object' && Array.isArray(payload)) {
       const obj = {
         [`${prefix}_array`]: payload
-          .map((element) => escapeSafeStringify(element, fastSafeStringify))
+          .map((value) =>
+            value != null ? escapeSafeStringify(value, fastSafeStringify, replacer) : '[Empty]',
+          )
           .join(', '),
       };
       return obj;
@@ -38,7 +48,7 @@ export default function payloadlog(payload: unknown, prefix: string): Record<str
     }
 
     const unknownObj = {
-      [`${prefix}_unknown_type`]: escapeSafeStringify(payload, fastSafeStringify),
+      [`${prefix}_unknown_type`]: escapeSafeStringify(payload, fastSafeStringify, replacer),
     };
 
     return unknownObj;

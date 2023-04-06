@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import config from '#configs/config';
 import route from '#handlers/route';
 import logging from '#loggers/bootstrap';
@@ -28,17 +29,23 @@ export async function bootstrap(): Promise<FastifyInstance> {
 
   server = fastify;
 
-  await server.register(fastifyUrlData).register(fastifyCors).register(loggingFlagPlugin);
-
-  await server.register(fastifyMultipart, {
-    attachFieldsToBody: true,
-    sharedSchemaId: 'fileUploadSchema',
-  });
+  server
+    .register(fastifyUrlData)
+    .register(fastifyCors)
+    .register(loggingFlagPlugin)
+    .register(fastifyMultipart, {
+      attachFieldsToBody: true,
+      throwFileSizeLimit: true,
+      limits: {
+        fileSize: 1 * 1024 * 1024 * 1024, // 1mb limits
+        files: 2,
+      },
+    });
 
   // If server start production mode, disable swagger-ui
   if (config.server.runMode !== 'production') {
-    await server.register(fastifySwagger, swaggerConfig());
-    await server.register(fastifySwaggerUI, swaggerUiConfig());
+    server.register(fastifySwagger, swaggerConfig());
+    server.register(fastifySwaggerUI, swaggerUiConfig());
   }
 
   server.setErrorHandler(

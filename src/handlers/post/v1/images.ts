@@ -19,6 +19,7 @@ export const option: RouteShorthandOptions<
   schema: {
     tags: ['images'],
     summary: 'upload image upload',
+    operationId: 'create-image',
     consumes: ['multipart/form-data'],
     body: { $ref: 'IReqCreateImageHandlerBody' },
     response: {

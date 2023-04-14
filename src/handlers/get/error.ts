@@ -1,7 +1,7 @@
 import config from '#configs/config';
 import IReplyHealthDto from '#dto/common/IReplyHealthDto';
 import { fallbackLng } from '#tools/i18n/i18nConfig';
-import { maeumRestErrorSchema, RestError } from '@maeum/error-handler';
+import { RestError, maeumRestErrorSchema } from '@maeum/error-handler';
 import acceptLanguage from 'accept-language';
 import { FastifyRequest, RouteShorthandOptions } from 'fastify';
 
@@ -9,6 +9,7 @@ export const option: RouteShorthandOptions = {
   schema: {
     tags: ['Common'],
     summary: 'Server health check and configuration getting',
+    operationId: 'raise-error',
     hide: true,
     querystring: {
       type: 'object',

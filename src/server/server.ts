@@ -3,7 +3,6 @@ import config from '#configs/config';
 import route from '#handlers/route';
 import logging from '#loggers/bootstrap';
 import { CE_LOG_PROTOCOL } from '#loggers/interface/CE_LOG_PROTOCOL';
-import { CE_HEADER_KEY } from '#server/modules/CE_HEADER_KEY';
 import optionFactory from '#server/modules/optionFactory';
 import loggingFlagPlugin from '#server/plugin/loggingFlagPlugin';
 import * as errorHook from '#server/plugin/onHookGlobalError';
@@ -19,6 +18,8 @@ import { errorHandler } from '@maeum/error-handler';
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import httpStatusCodes from 'http-status-codes';
+import { CE_HEADER_KEY } from './modules/CE_HEADER_KEY';
+import responseTimePlugin from './plugin/responseTimePlugin';
 
 const log = logging(__filename);
 
@@ -33,6 +34,10 @@ export async function bootstrap(): Promise<FastifyInstance> {
     .register(fastifyUrlData)
     .register(fastifyCors)
     .register(loggingFlagPlugin)
+    .register(responseTimePlugin, {
+      key: CE_HEADER_KEY.RESPONSE_TIME,
+      cond: () => config.server.runMode !== 'production',
+    })
     .register(fastifyMultipart, {
       attachFieldsToBody: true,
       throwFileSizeLimit: true,
@@ -40,12 +45,13 @@ export async function bootstrap(): Promise<FastifyInstance> {
         fileSize: 1 * 1024 * 1024 * 1024, // 1mb limits
         files: 2,
       },
+      sharedSchemaId: 'fileUploadSchema',
     });
 
   // If server start production mode, disable swagger-ui
   if (config.server.runMode !== 'production') {
-    server.register(fastifySwagger, swaggerConfig());
-    server.register(fastifySwaggerUI, swaggerUiConfig());
+    await server.register(fastifySwagger, swaggerConfig());
+    await server.register(fastifySwaggerUI, swaggerUiConfig());
   }
 
   server.setErrorHandler(
@@ -57,19 +63,8 @@ export async function bootstrap(): Promise<FastifyInstance> {
       errorHook.encryptor,
     ),
   );
-  server.addHook('onResponse', onHookResponse);
 
-  // Replace responseTime plugin
-  // via: https://www.fastify.io/docs/Reference/Reply/#getresponsetime
-  if (config.server.runMode !== 'production') {
-    server.addHook('onSend', (_req, reply, _data, done) => {
-      reply.header(CE_HEADER_KEY.RESPONSE_TIME, reply.getResponseTime()).then(
-        () => undefined,
-        (err) => log.trace(err),
-      );
-      done();
-    });
-  }
+  server.addHook('onResponse', onHookResponse);
 
   route(server);
 

@@ -28,7 +28,7 @@ export const option: RouteShorthandOptions = {
 };
 
 export default async function errorHandler(
-  req: FastifyRequest<{ Querystring: { ee?: string; code?: string } }>,
+  req: FastifyRequest<{ Querystring: { ee?: string; code?: string; pe?: string } }>,
 ) {
   const language = acceptLanguage.get(req.headers['accept-language']) ?? fallbackLng;
 
@@ -37,8 +37,12 @@ export default async function errorHandler(
       throw RestError.create({
         code: req.query.code,
         polyglot: { id: 'common.main.error' },
-        // data: { description: 'this is a test payload' },
+        data: { description: 'this is a test payload' },
       });
+    }
+
+    if (req.query.pe != null) {
+      throw new Error('plain error raised');
     }
 
     throw RestError.create({

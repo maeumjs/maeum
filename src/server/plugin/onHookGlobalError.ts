@@ -1,27 +1,28 @@
 import config from '#configs/config';
 import { CE_RUN_MODE } from '#configs/interfaces/CE_RUN_MODE';
-import httpLogging from '#loggers/httpLogging';
 import encrypt from '#tools/cipher/encrypt';
 import getLocales from '#tools/i18n/getLocales';
-import { errorHandler } from '@maeum/error-handler';
+import type {
+  TMaeumEncryptor,
+  TMaeumErrorHandlerHooks,
+  TMaeumErrorHandlerLocales,
+  TMaeumMessageIdHandles,
+} from '@maeum/error-handler';
+import { CE_MAEUM_DEFAULT_ERROR_HANDLER } from '@maeum/error-handler';
 import { ErrorObject } from 'ajv';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import httpStatusCodes from 'http-status-codes';
+import type { FastifyRequest } from 'fastify';
 
-export const localeHandler = {
-  [httpStatusCodes.BAD_REQUEST]: (
-    req: FastifyRequest,
-    id: string,
-    param?: Record<string, string>,
-  ) => getLocales(req.headers['accept-language']).t(id, param),
-  [httpStatusCodes.INTERNAL_SERVER_ERROR]: (
-    req: FastifyRequest,
-    id: string,
-    param?: Record<string, string>,
-  ) => getLocales(req.headers['accept-language']).t(id, param),
+export const messages: TMaeumMessageIdHandles = {
+  [CE_MAEUM_DEFAULT_ERROR_HANDLER.COMMON]: (id) => `common.main.${id}`,
+  [CE_MAEUM_DEFAULT_ERROR_HANDLER.REST_ERROR]: (id) => id,
 };
 
-export const encryptor: Parameters<typeof errorHandler>[4] = (code: string): string => {
+export const locales: TMaeumErrorHandlerLocales = {
+  [CE_MAEUM_DEFAULT_ERROR_HANDLER.COMMON]: (req, id, param) =>
+    getLocales(req.headers['accept-language']).t(id, param),
+};
+
+export const encryptor: TMaeumEncryptor = (code: string): string => {
   if (
     config.server.runMode === CE_RUN_MODE.STAGE ||
     config.server.runMode === CE_RUN_MODE.PRODUCTION
@@ -32,19 +33,10 @@ export const encryptor: Parameters<typeof errorHandler>[4] = (code: string): str
   return code;
 };
 
-export const hookHandler = {
-  [httpStatusCodes.BAD_REQUEST]: (
-    err: Error & { validation?: ErrorObject[] },
-    req: FastifyRequest,
-    reply: FastifyReply,
-  ) => {
-    setImmediate(() => httpLogging(req, reply, err));
-  },
-  [httpStatusCodes.INTERNAL_SERVER_ERROR]: (
-    err: Error & { validation?: ErrorObject[] },
-    req: FastifyRequest,
-    reply: FastifyReply,
-  ) => {
-    setImmediate(() => httpLogging(req, reply, err));
+export const hooks: TMaeumErrorHandlerHooks = {
+  [CE_MAEUM_DEFAULT_ERROR_HANDLER.COMMON]: {
+    pre: (err: Error & { validation?: ErrorObject[] }, req: FastifyRequest) => {
+      req.setRequestError(err);
+    },
   },
 };

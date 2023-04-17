@@ -4,9 +4,8 @@ import route from '#handlers/route';
 import logging from '#loggers/bootstrap';
 import { CE_LOG_PROTOCOL } from '#loggers/interface/CE_LOG_PROTOCOL';
 import optionFactory from '#server/modules/optionFactory';
-import loggingFlagPlugin from '#server/plugin/loggingFlagPlugin';
+import loggingPlugin from '#server/plugin/loggingPlugin';
 import * as errorHook from '#server/plugin/onHookGlobalError';
-import onHookResponse from '#server/plugin/onHookResponse';
 import swaggerConfig from '#server/plugin/swaggerConfig';
 import swaggerUiConfig from '#server/plugin/swaggerUiConfig';
 import fastifyCors from '@fastify/cors';
@@ -15,11 +14,10 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import fastifyUrlData from '@fastify/url-data';
 import { errorHandler } from '@maeum/error-handler';
+import { requestFlagsPlugin, responseTimePlugin } from '@maeum/plugins';
 import { FastifyInstance } from 'fastify';
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import httpStatusCodes from 'http-status-codes';
-import { CE_HEADER_KEY } from './modules/CE_HEADER_KEY';
-import responseTimePlugin from './plugin/responseTimePlugin';
 
 const log = logging(__filename);
 
@@ -33,10 +31,9 @@ export async function bootstrap(): Promise<FastifyInstance> {
   server
     .register(fastifyUrlData)
     .register(fastifyCors)
-    .register(loggingFlagPlugin)
+    .register(requestFlagsPlugin)
     .register(responseTimePlugin, {
-      key: CE_HEADER_KEY.RESPONSE_TIME,
-      cond: () => config.server.runMode !== 'production',
+      includeTime: () => config.server.runMode !== 'production',
     })
     .register(fastifyMultipart, {
       attachFieldsToBody: true,
@@ -46,6 +43,9 @@ export async function bootstrap(): Promise<FastifyInstance> {
         files: 2,
       },
       sharedSchemaId: 'fileUploadSchema',
+    })
+    .register(loggingPlugin, {
+      isPayloadLogging: process.env.ENV_PAYLOAD_LOGGING === 'true',
     });
 
   // If server start production mode, disable swagger-ui
@@ -55,16 +55,12 @@ export async function bootstrap(): Promise<FastifyInstance> {
   }
 
   server.setErrorHandler(
-    errorHandler(
-      [],
-      'common.main.',
-      errorHook.localeHandler,
-      errorHook.hookHandler,
-      errorHook.encryptor,
-    ),
+    errorHandler([], errorHook.locales, {
+      hooks: errorHook.hooks,
+      messages: errorHook.messages,
+      encryptor: errorHook.encryptor,
+    }),
   );
-
-  server.addHook('onResponse', onHookResponse);
 
   route(server);
 

@@ -6,5 +6,4 @@ export default function getIv(key?: string) {
   }
 
   return Buffer.from(CE_ENCRYPTION_DEFAULT.ENCRYPTION_IV);
-  // return crypto.randomBytes(CE_ENCRYPTION_DEFAULT.IV_LENGTH);
 }

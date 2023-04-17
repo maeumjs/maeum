@@ -7,11 +7,14 @@ import httplog from '#loggers/module/httplog';
 import payloadlog from '#loggers/module/payloadlog';
 import getLocales from '#tools/i18n/getLocales';
 import escape from '#tools/misc/escape';
+import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import { RestError } from '@maeum/error-handler';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import fastSafeStringify from 'fast-safe-stringify';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import httpStatusCodes from 'http-status-codes';
 import { createByfastify3 } from 'jin-curlize';
 import { isError } from 'my-easy-fp';
+import { compress } from 'snappy';
 
 const log = logging(__filename);
 
@@ -74,23 +77,41 @@ function getPayload(err?: Error): Record<string, string> | undefined {
   return undefined;
 }
 
-export default function httpLogging(
+async function getReplyPayload(
+  payload: unknown,
+  options: { payloadLogging: boolean; useSnappy: boolean },
+) {
+  if (!options.payloadLogging) {
+    return undefined;
+  }
+
+  if (payload == null) {
+    return undefined;
+  }
+
+  if (options.useSnappy) {
+    const compressed = await compress(fastSafeStringify(payload, undefined, 2));
+    return compressed.toString('base64');
+  }
+
+  return escapeSafeStringify(payload, fastSafeStringify);
+}
+
+export default async function httpLogging(
   req: FastifyRequest,
   reply: FastifyReply,
-  err?: Error,
+  options: { payloadLogging: boolean; useSnappy: boolean },
   level?: keyof ReturnType<typeof logging>,
-): Partial<ILogFormat> | boolean {
+): Promise<Partial<ILogFormat> | boolean> {
   try {
-    if (req.getIsRequestLogging()) {
+    if (req.getRequestLogging()) {
       log.trace('Already logging http logging');
       return true;
     }
 
     req.setRequestLogging();
 
-    const urlData = req.urlData();
-    const route =
-      urlData.path != null ? routeMap.get(urlData.path)?.get(req.method.toLowerCase()) : undefined;
+    const route = routeMap.get(req.routerPath)?.get(req.method.toLowerCase());
 
     if (route == null) {
       return true;
@@ -101,8 +122,10 @@ export default function httpLogging(
       return true;
     }
 
+    const err = req.getRequestError();
     const { duration, headers, queries, params, body } = httplog(req, reply);
-    const payload = getPayload(err);
+    const errPayload = getPayload(err);
+    const payload = await getReplyPayload(req.getRequestPayload(), options);
 
     const contents: ILogFormat = {
       status: reply.raw.statusCode,
@@ -118,7 +141,8 @@ export default function httpLogging(
         ...queries,
         ...params,
         ...body,
-        ...(payload ?? {}),
+        ...(errPayload ?? {}),
+        compl_payload: payload,
       },
     };
 
@@ -133,8 +157,8 @@ export default function httpLogging(
     }
 
     return true;
-  } catch (catched) {
-    const catchedError = isError(catched) ?? new Error(`unknown error raised from ${__filename}`);
+  } catch (caught) {
+    const catchedError = isError(caught) ?? new Error(`unknown error raised from ${__filename}`);
 
     const contents: ILogFormat = {
       err: catchedError,

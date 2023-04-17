@@ -2,7 +2,7 @@ import ajv, { ajvOptions } from '#configs/ajvbox';
 import { addSchema, plainJsonSchema } from '#configs/json-schema';
 import fastJsonStringify, { Options as FJSOptions } from 'fast-json-stringify';
 import fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
-import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
+import { IncomingMessage, Server, ServerResponse, createServer } from 'http';
 import { JSONSchema7 } from 'json-schema';
 import { ReadonlyDeep } from 'type-fest';
 

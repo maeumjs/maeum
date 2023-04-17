@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import ajv from '#configs/ajvbox';
 import IReqCreateImageHandlerMultipartBody from '#dto/v1/image/IReqCreateImageHandlerMultipartBody';
 import { MultipartFile } from '@fastify/multipart';
@@ -6,14 +7,16 @@ import {
   FastifyReply,
   FastifyRequest,
   HookHandlerDoneFunction,
+  RawServerBase,
   RouteShorthandOptions,
 } from 'fastify';
+import { IncomingMessage, ServerResponse } from 'http';
 import { SetOptional } from 'type-fest';
 
 export const option: RouteShorthandOptions<
-  any,
-  any,
-  any,
+  RawServerBase,
+  IncomingMessage,
+  ServerResponse,
   { Body: SetOptional<IReqCreateImageHandlerMultipartBody, '$files'> }
 > = {
   schema: {
@@ -41,8 +44,6 @@ export const option: RouteShorthandOptions<
     body.files = body.$files.map((file) => file.filename);
     const imageSchema = { type: 'array', items: req.server.getSchema('fileUploadSchema') };
     const result = ajv.validate(imageSchema, body.$files);
-
-    console.log(body.$files.map((f) => f.file.bytesRead));
 
     if (!result) {
       throw new Error('validation error');

@@ -1,5 +1,5 @@
 import logging from '#loggers/bootstrap';
-import httpLogging from '#loggers/httpLogging';
+import requestLogging from '#loggers/requestLogging';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import fastifyPlugin from 'fastify-plugin';
 import { isError } from 'my-easy-fp';
@@ -27,7 +27,7 @@ const loggingPlugin = fastifyPlugin(
     });
 
     fastify.addHook('onResponse', (req, reply) => {
-      httpLogging(req, reply, {
+      requestLogging(req, reply, {
         payloadLogging: process.env.ENV_PAYLOAD_LOGGING === 'true',
         useSnappy: process.env.ENV_PAYLOAD_LOGGING === 'true',
       }).catch((caught) => {

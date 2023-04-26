@@ -1,6 +1,4 @@
-import getRequestDuration from '#loggers/module/getRequestDuration';
-import payloadlog from '#loggers/module/payloadlog';
-import { CE_HEADER_KEY } from '#server/modules/CE_HEADER_KEY';
+import payloadlog from '#loggers/modules/payloadlog';
 import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
 import { snakeCase } from 'change-case';
 import fastSafeStringify from 'fast-safe-stringify';
@@ -9,7 +7,7 @@ import * as uuid from 'uuid';
 
 export default function httplog(
   req: FastifyRequest,
-  _reply: FastifyReply,
+  reply: FastifyReply,
 ): {
   duration: number;
   headers: Record<string, string>;
@@ -18,7 +16,7 @@ export default function httplog(
   body: Record<string, string>;
 } {
   try {
-    const duration = getRequestDuration(req.headers[CE_HEADER_KEY.RESPONSE_TIME]);
+    const duration = reply.getResponseTime();
     const headers: Record<string, string> = Object.entries(req.headers).reduce<
       Record<string, string>
     >((obj, [key, value]) => {

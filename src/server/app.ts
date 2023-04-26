@@ -1,6 +1,6 @@
 import getPort from '#configs/modules/getPort';
 import logging from '#loggers/bootstrap';
-import uncaughtExceptionHandlerBootstrap from '#loggers/module/uncaughtExceptionHandler';
+import uncaughtExceptionHandlerBootstrap from '#loggers/modules/uncaughtExceptionHandler';
 import { bootstrap as httpBootstrap, unbootstrap as httpUnbootstrap, listen } from '#server/server';
 import httpStatusCodes from 'http-status-codes';
 import { isError } from 'my-easy-fp';

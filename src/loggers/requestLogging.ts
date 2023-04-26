@@ -2,9 +2,9 @@ import config from '#configs/config';
 import routeMap from '#handlers/route-map';
 import logging from '#loggers/bootstrap';
 import { ILogFormat } from '#loggers/interface/ILogFormat';
-import getHttpMethod from '#loggers/module/getHttpMethod';
-import httplog from '#loggers/module/httplog';
-import payloadlog from '#loggers/module/payloadlog';
+import getHttpMethod from '#loggers/modules/getHttpMethod';
+import httplog from '#loggers/modules/httplog';
+import payloadlog from '#loggers/modules/payloadlog';
 import getLocales from '#tools/i18n/getLocales';
 import escape from '#tools/misc/escape';
 import escapeSafeStringify from '#tools/misc/escapeSafeStringify';
@@ -97,7 +97,7 @@ async function getReplyPayload(
   return escapeSafeStringify(payload, fastSafeStringify);
 }
 
-export default async function httpLogging(
+export default async function requestLogging(
   req: FastifyRequest,
   reply: FastifyReply,
   options: { payloadLogging: boolean; useSnappy: boolean },
@@ -142,7 +142,7 @@ export default async function httpLogging(
         ...params,
         ...body,
         ...(errPayload ?? {}),
-        compl_payload: payload,
+        payload,
       },
     };
 
